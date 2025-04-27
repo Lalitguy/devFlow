@@ -119,7 +119,7 @@
   }
 
   .subtle-medium {
-    @apply text-[10px] font-medium leading-[13px] !important;
+    @apply text-[10px] font-medium leading-[13px];
   }
 
   .subtle-regular {
