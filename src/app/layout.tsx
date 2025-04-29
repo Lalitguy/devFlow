@@ -3,7 +3,6 @@ import type { Metadata } from "next";
 import React from "react";
 import localFont from "next/font/local";
 import ThemeProvider from "@/context/ThemeProvider";
-import NavBar from "@/components/ui/navigation/navbar";
 
 const inter = localFont({
   src: "../fonts/InterVF.ttf",

@@ -3,10 +3,10 @@ import React, { PropsWithChildren } from "react";
 
 const RootLayout = ({ children }: PropsWithChildren) => {
   return (
-    <main>
+    <>
       <NavBar />
-      {children}
-    </main>
+      <main>{children}</main>
+    </>
   );
 };
 
