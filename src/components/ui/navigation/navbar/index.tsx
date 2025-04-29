@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
+import Theme from "./Theme";
 
 const NavBar = () => {
   return (
@@ -13,7 +14,9 @@ const NavBar = () => {
       </Link>
 
       <p>Global Search</p>
-      <p>Theme</p>
+      <div>
+        <Theme />
+      </div>
     </nav>
   );
 };
