@@ -3,6 +3,9 @@ import type { Metadata } from "next";
 import React from "react";
 import localFont from "next/font/local";
 import ThemeProvider from "@/context/ThemeProvider";
+import { Toaster } from "sonner";
+import { auth } from "@auth";
+import { SessionProvider } from "next-auth/react";
 
 const inter = localFont({
   src: "../fonts/InterVF.ttf",
@@ -25,25 +28,32 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({
+const RootLayout = async ({
   children,
 }: Readonly<{
   children: React.ReactNode;
-}>) {
+}>) => {
+  const session = await auth();
+
   return (
     <html lang="en" suppressHydrationWarning>
-      <body
-        className={`${inter.className} ${SpaceGrotesk.variable} antialiased`}
-      >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
+      <SessionProvider session={session}>
+        <body
+          className={`${inter.className} ${SpaceGrotesk.variable} antialiased`}
         >
-          {children}
-        </ThemeProvider>
-      </body>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+          <Toaster />
+        </body>
+      </SessionProvider>
     </html>
   );
-}
+};
+
+export default RootLayout;
