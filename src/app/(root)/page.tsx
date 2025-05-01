@@ -1,3 +1,4 @@
+import HomeFilter from "@/components/filter/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
@@ -8,22 +9,30 @@ const questions = [
   {
     _id: "1",
     title: "How to create and use a custom hook in React ?",
+    tags: [{ _id: 1, name: "React" }],
   },
   {
     _id: "2",
     title: "How to use React Query ?",
+    tags: [{ _id: 2, name: "React Query" }],
   },
   {
     _id: "3",
     title: "How to use Redux ?",
+    tags: [
+      { _id: 3, name: "Redux" },
+      { _id: 4, name: "javascript" },
+    ],
   },
   {
     _id: "4",
     title: "How to use React Router ?",
+    tags: [{ _id: 4, name: "React Router" }],
   },
   {
     _id: "5",
     title: "How to use React Context ?",
+    tags: [{ _id: 5, name: "React Context" }],
   },
 ];
 
@@ -31,11 +40,21 @@ interface searchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
 const Home = async ({ searchParams }: searchParams) => {
-  const { query = "" } = await searchParams;
+  const { query = "", filter = "" } = await searchParams;
 
-  const filteredQuestions = questions.filter((question) =>
-    question.title.toLowerCase().includes(query?.toLowerCase())
-  );
+  const filteredQuestions = questions.filter((question) => {
+    const queryMatch = question.title
+      .toLowerCase()
+      .includes(query?.toLowerCase());
+
+    const filterMatch = filter
+      ? question.tags.some(
+          (tag) => tag.name.toLowerCase() === filter?.toLowerCase()
+        )
+      : true;
+
+    return queryMatch && filterMatch;
+  });
 
   return (
     <>
@@ -52,7 +71,8 @@ const Home = async ({ searchParams }: searchParams) => {
       <section className="mt-11">
         <LocalSearch route="/" placeholder="Search questions..." />
       </section>
-      <section>Home Filer</section>
+
+      <HomeFilter />
 
       <div className="flex flex-col gap-6 mt-10 w-full">
         {filteredQuestions.map(({ _id, title }) => (
