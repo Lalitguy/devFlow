@@ -11,6 +11,7 @@ interface TagProps {
   showCount?: boolean;
   compact?: boolean;
 }
+
 const TagCard = ({ _id, name, questions, showCount, compact }: TagProps) => {
   const iconClass = getDeviconClassName(name);
   return (
