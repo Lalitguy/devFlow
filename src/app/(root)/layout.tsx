@@ -1,4 +1,4 @@
-import NavBar from "@/components/ui/navigation/navbar";
+import NavBar from "@/components/navigation/navbar";
 import React, { PropsWithChildren } from "react";
 
 const RootLayout = ({ children }: PropsWithChildren) => {
