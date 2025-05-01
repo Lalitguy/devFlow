@@ -7,7 +7,7 @@ import { getDeviconClassName } from "@/lib/utils";
 interface TagProps {
   _id: string;
   name: string;
-  questions: number;
+  questions?: number;
   showCount?: boolean;
   compact?: boolean;
 }
@@ -23,7 +23,7 @@ const TagCard = ({ _id, name, questions, showCount, compact }: TagProps) => {
         </div>
       </Badge>
 
-      {showCount && (
+      {showCount && questions && (
         <p className="text-dark500_light700 small-medium">{questions}</p>
       )}
     </Link>

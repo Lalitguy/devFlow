@@ -1,38 +1,52 @@
+import React from "react";
+import QuestionCard from "@/components/cards/QuestionCard";
 import HomeFilter from "@/components/filter/HomeFilter";
 import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
 import Link from "next/link";
-import React from "react";
+import { QuestionProps } from "../types/global";
 
-const questions = [
+const questions: QuestionProps[] = [
   {
     _id: "1",
     title: "How to create and use a custom hook in React ?",
-    tags: [{ _id: 1, name: "React" }],
+    tags: [{ _id: "1", name: "React" }],
+    createdAt: new Date(),
+    author: { _id: "1", name: "John Doe", image: "/icons/avatar.svg" },
+    upvotes: 10,
+    answers: 5,
+    views: 100,
   },
   {
     _id: "2",
-    title: "How to use React Query ?",
-    tags: [{ _id: 2, name: "React Query" }],
+    title: "How to use useEffect hook in React ?",
+    tags: [{ _id: "1", name: "React" }],
+    createdAt: new Date("2023-10-01"),
+    author: { _id: "1", name: "John Doe", image: "/icons/avatar.svg" },
+    upvotes: 10,
+    answers: 5,
+    views: 100,
   },
   {
     _id: "3",
-    title: "How to use Redux ?",
-    tags: [
-      { _id: 3, name: "Redux" },
-      { _id: 4, name: "javascript" },
-    ],
+    title: "How to use Javascript ?",
+    tags: [{ _id: "1", name: "javascript" }],
+    createdAt: new Date("2023-10-01"),
+    author: { _id: "1", name: "John Doe", image: "/icons/avatar.svg" },
+    upvotes: 10,
+    answers: 5,
+    views: 100,
   },
   {
     _id: "4",
-    title: "How to use React Router ?",
-    tags: [{ _id: 4, name: "React Router" }],
-  },
-  {
-    _id: "5",
-    title: "How to use React Context ?",
-    tags: [{ _id: 5, name: "React Context" }],
+    title: "What is Query ?",
+    tags: [{ _id: "1", name: "bun" }],
+    createdAt: new Date("2023-10-01"),
+    author: { _id: "1", name: "John Doe", image: "/icons/avatar.svg" },
+    upvotes: 10,
+    answers: 5,
+    views: 100,
   },
 ];
 
@@ -75,8 +89,8 @@ const Home = async ({ searchParams }: searchParams) => {
       <HomeFilter />
 
       <div className="flex flex-col gap-6 mt-10 w-full">
-        {filteredQuestions.map(({ _id, title }) => (
-          <div key={_id}>{title}</div>
+        {filteredQuestions.map((e) => (
+          <QuestionCard question={e} key={e._id} />
         ))}
       </div>
     </>
