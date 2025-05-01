@@ -24,7 +24,7 @@ const NavLinks = ({ isMobileNav = true }: NavLinksProps) => {
         const link =
           item.route === "/profile"
             ? userId
-              ? `${item.route}${userId}`
+              ? `${item.route}/${userId}`
               : item.route
             : item.route;
 
