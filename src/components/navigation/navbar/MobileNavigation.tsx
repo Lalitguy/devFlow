@@ -44,33 +44,27 @@ const MobileNavigation = () => {
         </Link>
 
         <div className="flex flex-col justify-between h-[calc(100vh-80px)] overflow-y-auto no-scrollbar">
-          <SheetClose asChild>
-            <section className="flex flex-col gap-6 pt-14 h-full">
-              <NavLinks isMobileNav />
-            </section>
-          </SheetClose>
+          <section className="flex flex-col gap-6 pt-14 h-full">
+            <NavLinks isMobileNav />
+          </section>
 
-          <div className="flex flex-col gap-3 mt-6">
-            <SheetClose asChild className="">
-              <div>
-                <Link href={ROUTES.SIGN_IN}>
-                  <Button className="shadow-none px-4 py-3 w-full min-h-[41px] small-medium btn-secondary roudned-lg">
-                    <span className="primary-text-gradient">Login</span>
-                  </Button>
-                </Link>
-              </div>
+          <section className="flex flex-col gap-3 mt-6">
+            <SheetClose asChild>
+              <Link href={ROUTES.SIGN_IN}>
+                <Button className="shadow-none px-4 py-3 w-full min-h-[41px] small-medium btn-secondary roudned-lg">
+                  <span className="primary-text-gradient">Login</span>
+                </Button>
+              </Link>
             </SheetClose>
 
-            <SheetClose>
-              <div>
-                <Link href={ROUTES.SIGN_UP}>
-                  <Button className="shadow-none px-4 py-3 border light-border-2 rounded-lg w-full min-h-[41px] text-dark400_light900 small-medium btn-tertiary">
-                    <span className="primary-text-gradient">Register</span>
-                  </Button>
-                </Link>
-              </div>
+            <SheetClose asChild>
+              <Link href={ROUTES.SIGN_UP}>
+                <Button className="shadow-none px-4 py-3 border light-border-2 rounded-lg w-full min-h-[41px] text-dark400_light900 small-medium btn-tertiary">
+                  <span className="primary-text-gradient">Register</span>
+                </Button>
+              </Link>
             </SheetClose>
-          </div>
+          </section>
         </div>
       </SheetContent>
     </Sheet>

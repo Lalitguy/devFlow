@@ -5,24 +5,33 @@ import { usePathname } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { SheetClose } from "@/components/ui/sheet";
 
 interface NavLinksProps {
   isMobileNav?: boolean;
 }
 const NavLinks = ({ isMobileNav = true }: NavLinksProps) => {
   const pathname = usePathname();
+  const userId = 1; //Todo
 
   return (
     <>
-      {sideBarLinks.map((item, i) => {
+      {sideBarLinks.map((item) => {
         const isActive =
           pathname === item.route ||
           (pathname.includes(item.route) && item.route.length > 1);
 
+        const link =
+          item.route === "/profile"
+            ? userId
+              ? `${item.route}${userId}`
+              : item.route
+            : item.route;
+
         const LinkComponent = (
           <Link
-            href={item.route}
-            key={i}
+            href={link}
+            key={item.route}
             className={cn(
               isActive
                 ? "primary-gradient rounded-lg text-light-900"
@@ -50,7 +59,13 @@ const NavLinks = ({ isMobileNav = true }: NavLinksProps) => {
           </Link>
         );
 
-        return LinkComponent;
+        return isMobileNav ? (
+          <SheetClose asChild key={item.route}>
+            {LinkComponent}
+          </SheetClose>
+        ) : (
+          LinkComponent
+        );
       })}
     </>
   );
