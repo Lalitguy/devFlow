@@ -132,7 +132,7 @@ const Editor = ({ editorRef, value, fieldChange, ...props }: RditorProps) => {
       onChange={(value) => {
         fieldChange(value);
       }}
-      className="border light-border-2 focus-visible:ring-0 w-full background-light800_dark200 markdown-editor dark-editor no-focus"
+      className="grid border light-border-2 focus-visible:ring-0 w-full background-light800_dark200 markdown-editor dark-editor no-focus"
     />
   );
 };
