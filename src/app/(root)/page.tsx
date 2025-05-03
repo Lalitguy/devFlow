@@ -8,6 +8,7 @@ import Link from "next/link";
 import { QuestionProps } from "../types/global";
 import handleError from "@/lib/handlers/error";
 import { ValidationError } from "@/lib/https-error";
+import dbConnect from "@/lib/mongoose";
 
 const questions: QuestionProps[] = [
   {
@@ -56,17 +57,19 @@ interface searchParams {
   searchParams: Promise<{ [key: string]: string }>;
 }
 
-const test = () => {
+const test = async () => {
   try {
     throw new ValidationError({
       title: ["Title is required"],
     }); // Test data;
+
+    // await dbConnect();
   } catch (error) {
     return handleError(error);
   }
 };
 const Home = async ({ searchParams }: searchParams) => {
-  console.log(test());
+  test();
   const { query = "", filter = "" } = await searchParams;
 
   const filteredQuestions = questions.filter((question) => {

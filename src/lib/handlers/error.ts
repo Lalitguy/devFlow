@@ -2,6 +2,7 @@ import { ValidationError } from "./../https-error";
 import { NextResponse } from "next/server";
 import { RequestError } from "../https-error";
 import { ZodError } from "zod";
+import logger from "../logger";
 
 export type ResponseType = "api" | "server";
 
@@ -29,6 +30,13 @@ const formatResponse = (
 
 const handleError = (error: unknown, responseType: ResponseType = "server") => {
   if (error instanceof RequestError) {
+    logger.error(
+      {
+        err: error,
+      },
+      `${responseType.toLocaleUpperCase()} Error ${error.message}`
+    );
+
     return formatResponse(
       responseType,
       error.statusCode,
@@ -41,6 +49,13 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
       error.flatten().fieldErrors as Record<string, string[]>
     );
 
+    logger.error(
+      {
+        err: error,
+      },
+      `Validation Error ${error.message}`
+    );
+
     return formatResponse(
       responseType,
       validationError.statusCode,
@@ -48,7 +63,14 @@ const handleError = (error: unknown, responseType: ResponseType = "server") => {
       validationError.errors
     );
   }
+
   if (error instanceof Error) {
+    logger.error(
+      {
+        err: error,
+      },
+      `Unexpected Error ${error.message}`
+    );
     return formatResponse(responseType, 500, error.message);
   }
 
