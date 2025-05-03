@@ -1,6 +1,6 @@
 import { model, models, Schema, Types } from "mongoose";
 
-export interface IAnswer {
+interface IAnswer {
   author: Types.ObjectId;
   question: Types.ObjectId;
   content: string;
@@ -20,5 +20,7 @@ const AnswerSchema = new Schema<IAnswer>(
 );
 
 const Answer = models?.Answer || model<IAnswer>("Answer", AnswerSchema);
+
+export type IAnswerDoc = IAnswer & Document;
 
 export default Answer;

@@ -1,10 +1,10 @@
 import { model, models, Schema } from "mongoose";
 
-export interface IUser {
+interface IUser {
   name: string;
   username: string;
   email: string;
-  image: string;
+  image?: string;
   bio?: string;
   location?: string;
   portfolio?: string;
@@ -15,7 +15,7 @@ const UserSchema = new Schema<IUser>(
     name: { type: String, required: true },
     username: { type: String, required: true, unique: true },
     email: { type: String, required: true, unique: true },
-    image: { type: String, required: true },
+    image: { type: String },
     bio: { type: String },
     location: { type: String },
     portfolio: { type: String },
@@ -26,4 +26,5 @@ const UserSchema = new Schema<IUser>(
 
 const User = models?.User || model<IUser>("User", UserSchema);
 
+export type IUserDoc = IUser & Document;
 export default User;

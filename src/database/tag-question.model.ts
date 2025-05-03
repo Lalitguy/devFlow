@@ -1,6 +1,6 @@
 import { Schema, Types, models, model } from "mongoose";
 
-export interface ITagQuestion {
+interface ITagQuestion {
   tag: Types.ObjectId;
   question: Types.ObjectId;
 }
@@ -15,5 +15,6 @@ const TagQuestionSchema = new Schema<ITagQuestion>(
 
 const TagQuestion =
   models?.TagQuestion || model<ITagQuestion>("TagQuestion", TagQuestionSchema);
+export type ITagQuestionDoc = ITagQuestion & Document;
 
 export default TagQuestion;
