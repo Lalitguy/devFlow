@@ -2,8 +2,8 @@ import { model, models, Schema, Types } from "mongoose";
 
 export interface IModel {}
 
-const QuestionSchema = new Schema<IModel>({}, { timestamps: true });
+const ModelSchema = new Schema<IModel>({}, { timestamps: true });
 
-const Question = models?.Question || model<IModel>("Question", QuestionSchema);
+const Model = models?.Model || model<IModel>("Model", ModelSchema);
 
-export default Question;
+export default Model;

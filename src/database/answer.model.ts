@@ -8,7 +8,7 @@ export interface IAnswer {
   downvotes: number;
 }
 
-const QuestionSchema = new Schema<IAnswer>(
+const AnswerSchema = new Schema<IAnswer>(
   {
     author: { type: Schema.Types.ObjectId, ref: "User", required: true },
     question: { type: Schema.Types.ObjectId, ref: "Question", required: true },
@@ -19,6 +19,6 @@ const QuestionSchema = new Schema<IAnswer>(
   { timestamps: true }
 );
 
-const Question = models?.Question || model<IAnswer>("Question", QuestionSchema);
+const Answer = models?.Answer || model<IAnswer>("Answer", AnswerSchema);
 
-export default Question;
+export default Answer;
