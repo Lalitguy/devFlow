@@ -1,4 +1,3 @@
-import { QuestionProps, Tag } from "@/app/types/global";
 import React from "react";
 
 interface QuestionCardProps {

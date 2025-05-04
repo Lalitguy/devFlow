@@ -5,7 +5,6 @@ import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
 import Link from "next/link";
-import { QuestionProps } from "../types/global";
 
 const questions: QuestionProps[] = [
   {
