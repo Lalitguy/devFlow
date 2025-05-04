@@ -4,7 +4,7 @@ import React from "react";
 import localFont from "next/font/local";
 import ThemeProvider from "@/context/ThemeProvider";
 import { Toaster } from "sonner";
-import { auth } from "@auth";
+import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
 
 const inter = localFont({

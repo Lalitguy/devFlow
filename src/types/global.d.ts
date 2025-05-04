@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+export {};
 
 declare global {
   interface Tag {
