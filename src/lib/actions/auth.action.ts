@@ -58,8 +58,8 @@ export async function signUpWithCredentials(
       { session }
     );
 
-    await signIn("credentials", { email, password, redirect: false });
     await session.commitTransaction();
+    await signIn("credentials", { email, password, redirect: false });
 
     return { success: true };
   } catch (error) {
