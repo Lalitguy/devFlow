@@ -9,10 +9,13 @@ import { SheetClose } from "@/components/ui/sheet";
 
 interface NavLinksProps {
   isMobileNav?: boolean;
+  userId?: string;
 }
-const NavLinks = ({ isMobileNav = true }: NavLinksProps) => {
+const NavLinks = ({
+  isMobileNav = false,
+  userId = undefined,
+}: NavLinksProps) => {
   const pathname = usePathname();
-  const userId = 1; //Todo
 
   return (
     <>
