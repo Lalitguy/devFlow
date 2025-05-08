@@ -1,7 +1,7 @@
 "use client";
 import { AskQuestionSchema } from "@/lib/validations";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React, { KeyboardEvent, useRef } from "react";
+import React, { KeyboardEvent, useRef, useTransition } from "react";
 import { useForm } from "react-hook-form";
 import {
   Form,
@@ -18,6 +18,11 @@ import { MDXEditorMethods } from "@mdxeditor/editor";
 import dynamic from "next/dynamic";
 import { z } from "zod";
 import TagCard from "../cards/TagCard";
+import { createQuestion } from "@/lib/actions/question.action";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
+import ROUTES from "@/constants/routes";
+import { RefreshCcw } from "lucide-react";
 
 // This is the only place InitializedMDXEditor is imported directly.
 const Editor = dynamic(() => import("@/components/editor"), {
@@ -26,6 +31,9 @@ const Editor = dynamic(() => import("@/components/editor"), {
 });
 
 const QuestionForm = () => {
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
   const editorRef = useRef<MDXEditorMethods>(null);
   const form = useForm<z.infer<typeof AskQuestionSchema>>({
     resolver: zodResolver(AskQuestionSchema),
@@ -36,8 +44,25 @@ const QuestionForm = () => {
     },
   });
 
-  const handleCreateQuestion = (data: z.infer<typeof AskQuestionSchema>) => {
-    console.log("Form Data", data);
+  const handleCreateQuestion = async (
+    data: z.infer<typeof AskQuestionSchema>
+  ) => {
+    startTransition(async () => {
+      const result = await createQuestion(data);
+
+      if (result.success) {
+        form.reset();
+
+        if (result.data)
+          router.push(ROUTES.QUESTION(result.data._id as string));
+      } else {
+        toast.error(`Error ${result?.status}`, {
+          description: result?.error?.message || "An error occurred",
+          richColors: true,
+          position: "top-center",
+        });
+      }
+    });
   };
 
   const handleKeyUp = (
@@ -181,7 +206,14 @@ const QuestionForm = () => {
             type="submit"
             className="w-fit !text-light-900 primary-gradient"
           >
-            Ask Question
+            {isPending ? (
+              <>
+                <RefreshCcw className="mr-2 size-4 animate-spin" />
+                <span>Submitting</span>
+              </>
+            ) : (
+              "Ask Question"
+            )}
           </Button>
         </div>
       </form>

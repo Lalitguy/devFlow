@@ -19,6 +19,16 @@ async function action<T>({
   schema,
   authorize = false,
 }: ActionOptions<T>) {
+  let session: Session | null = null;
+
+  if (authorize) {
+    session = await auth();
+
+    if (!session) {
+      return new UnauthorizedError();
+    }
+  }
+
   if (schema && params) {
     try {
       schema.parse(params);
@@ -30,16 +40,6 @@ async function action<T>({
       } else {
         return new Error("Schema validation failed");
       }
-    }
-  }
-
-  let session: Session | null = null;
-
-  if (authorize) {
-    session = await auth();
-
-    if (!session) {
-      return new UnauthorizedError();
     }
   }
 
