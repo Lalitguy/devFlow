@@ -18,7 +18,7 @@ import { MDXEditorMethods } from "@mdxeditor/editor";
 import dynamic from "next/dynamic";
 import { z } from "zod";
 import TagCard from "../cards/TagCard";
-import { createQuestion } from "@/lib/actions/question.action";
+import { createQuestion, editQuestion } from "@/lib/actions/question.action";
 import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import ROUTES from "@/constants/routes";
@@ -30,7 +30,11 @@ const Editor = dynamic(() => import("@/components/editor"), {
   ssr: false,
 });
 
-const QuestionForm = () => {
+interface QuestionFormProps {
+  question?: QuestionI;
+  isEdit?: boolean;
+}
+const QuestionForm = ({ question, isEdit = false }: QuestionFormProps = {}) => {
   const router = useRouter();
   const [isPending, startTransition] = useTransition();
 
@@ -38,9 +42,9 @@ const QuestionForm = () => {
   const form = useForm<z.infer<typeof AskQuestionSchema>>({
     resolver: zodResolver(AskQuestionSchema),
     defaultValues: {
-      title: "",
-      content: "",
-      tags: [],
+      title: question?.title || "",
+      content: question?.content || "",
+      tags: question?.tags.map((tag) => tag.name) || [],
     },
   });
 
@@ -48,13 +52,23 @@ const QuestionForm = () => {
     data: z.infer<typeof AskQuestionSchema>
   ) => {
     startTransition(async () => {
-      const result = await createQuestion(data);
+      let result = null;
+      if (isEdit && question) {
+        result = await editQuestion({
+          questionId: question._id,
+          ...data,
+        });
+      } else {
+        result = await createQuestion(data);
+      }
 
       if (result.success) {
-        form.reset();
-
-        if (result.data)
-          router.push(ROUTES.QUESTION(result.data._id as string));
+        toast.success("Success", {
+          description: isEdit
+            ? "Question updated successfully"
+            : "Question created successfully",
+        });
+        if (result.data) router.push(ROUTES.QUESTION(result.data._id));
       } else {
         toast.error(`Error ${result?.status}`, {
           description: result?.error?.message || "An error occurred",
@@ -172,7 +186,7 @@ const QuestionForm = () => {
                 <div>
                   <Input
                     type={"text"}
-                    placeholder="Add tags to your question"
+                    placeholder="Add tags..."
                     className="border light-border-2 rounded-1.5 min-h-[56px] text-dark-300_light700 paragraph-regular background-light700_dark300 no-focus"
                     onKeyDown={(e) => handleKeyUp(e, field)}
                   />
@@ -211,6 +225,8 @@ const QuestionForm = () => {
                 <RefreshCcw className="mr-2 size-4 animate-spin" />
                 <span>Submitting</span>
               </>
+            ) : isEdit ? (
+              "Edit"
             ) : (
               "Ask Question"
             )}

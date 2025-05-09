@@ -29,6 +29,29 @@ declare global {
     searchParams: Promise<Record<string, string>>;
   }
 
+  interface QuestionI {
+    _id: string;
+    title: string;
+    content: string;
+    tags: Tag[];
+    author: Author;
+    createdAt: Date;
+    upvotes: number;
+    downvotes: number;
+    answers: number;
+    views: number;
+  }
+
+  interface Answer {
+    _id: string;
+    author: Author;
+    content: string;
+    upvotes: number;
+    question: string;
+    downvotes: number;
+    createdAt: Date;
+  }
+
   type ActionResponse<T = null> = {
     success: boolean;
     status?: number;
