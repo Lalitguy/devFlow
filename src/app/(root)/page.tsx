@@ -5,6 +5,8 @@ import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
 import Link from "next/link";
+import { filter } from "@mdxeditor/editor";
+import { getQuestions } from "@/lib/actions/question.action";
 
 const questions: QuestionProps[] = [
   {
@@ -49,26 +51,31 @@ const questions: QuestionProps[] = [
   },
 ];
 
-interface searchParams {
-  searchParams: Promise<{ [key: string]: string }>;
-}
+const Home = async ({ searchParams }: RouteParams) => {
+  const { page, pageSize, query, filter } = await searchParams;
 
-const Home = async ({ searchParams }: searchParams) => {
-  const { query = "", filter = "" } = await searchParams;
-
-  const filteredQuestions = questions.filter((question) => {
-    const queryMatch = question.title
-      .toLowerCase()
-      .includes(query?.toLowerCase());
-
-    const filterMatch = filter
-      ? question.tags.some(
-          (tag) => tag.name.toLowerCase() === filter?.toLowerCase()
-        )
-      : true;
-
-    return queryMatch && filterMatch;
+  const { success, data, error } = await getQuestions({
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+    query,
+    filter,
   });
+
+  const { questions } = data || {};
+
+  // const filteredQuestions = questions.filter((question) => {
+  //   const queryMatch = question.title
+  //     .toLowerCase()
+  //     .includes(query?.toLowerCase());
+
+  //   const filterMatch = filter ?
+  //  question.tags.some(
+  //         (tag) => tag.name.toLowerCase() === filter?.toLowerCase()
+  //       )
+  //     : true;
+
+  //   return queryMatch && filterMatch;
+  // });
 
   return (
     <>
@@ -88,11 +95,23 @@ const Home = async ({ searchParams }: searchParams) => {
 
       <HomeFilter />
 
-      <div className="flex flex-col gap-6 mt-10 w-full">
-        {filteredQuestions.map((e) => (
-          <QuestionCard question={e} key={e._id} />
-        ))}
-      </div>
+      {success ? (
+        <div className="flex flex-col gap-6 mt-10 w-full">
+          {questions && questions.length ? (
+            questions?.map((e) => <QuestionCard question={e} key={e._id} />)
+          ) : (
+            <div className="flex justify-center items-center mt-10 w-full">
+              <p className="text-dark400_light700">No questions found</p>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="flex justify-center items-center mt-10 w-full">
+          <p className="text-dark400_light700">
+            {error?.message || "Failed to fetch questions"}
+          </p>
+        </div>
+      )}
     </>
   );
 };
