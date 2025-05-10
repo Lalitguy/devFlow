@@ -3,12 +3,14 @@ import Link from "next/link";
 import React from "react";
 import { Avatar, AvatarFallback } from "./ui/avatar";
 import Image from "next/image";
+import { cn } from "@/lib/utils";
 
 interface UserAvatarProps {
   id: string;
   name: string;
   imageUrl?: string | null;
   className?: string;
+  fallbackAvatarClassName?: string; // Additional classes for the avatar container.
 }
 
 const UserAvatar = ({
@@ -16,6 +18,7 @@ const UserAvatar = ({
   name,
   imageUrl,
   className = "",
+  fallbackAvatarClassName,
 }: UserAvatarProps) => {
   const initials = name
     .split(" ")
@@ -36,7 +39,12 @@ const UserAvatar = ({
             quality={100}
           />
         ) : (
-          <AvatarFallback className="font-space-grotesk font-bold text-white tracking-wider primary-gradient">
+          <AvatarFallback
+            className={cn(
+              "font-space-grotesk font-bold text-white tracking-wider primary-gradient",
+              fallbackAvatarClassName
+            )}
+          >
             {initials}
           </AvatarFallback>
         )}

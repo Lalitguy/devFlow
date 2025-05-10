@@ -91,7 +91,7 @@ const getDeviconClassName = (techName: string) => {
   return `${techMap[normalizedName] || "devicon-devicon-plain"} colored`;
 };
 
-export function getTechDescription(techName: string): string {
+const getTechDescription = (techName: string): string => {
   const normalizedTech = techName.replace(/[ .]/g, "").toLowerCase();
 
   // Mapping technology names to descriptions
@@ -127,7 +127,7 @@ export function getTechDescription(techName: string): string {
     techDescriptionMap[normalizedTech] ||
     `${techName} is a technology or tool widely used in software development, providing valuable features and capabilities.`
   );
-}
+};
 
 const getTimeStamp = (createdAt: Date): string => {
   const date = new Date(createdAt);
@@ -154,4 +154,20 @@ const getTimeStamp = (createdAt: Date): string => {
   return `${diffDays} days ago`;
 };
 
-export { cn, getDeviconClassName, getTimeStamp };
+const formatNumber = (number: number): string => {
+  if (number >= 1000000) {
+    return (number / 1000000).toFixed(1) + "M";
+  } else if (number >= 1000) {
+    return (number / 1000).toFixed(1) + "K";
+  } else {
+    return number.toString();
+  }
+};
+
+export {
+  cn,
+  getDeviconClassName,
+  getTechDescription,
+  getTimeStamp,
+  formatNumber,
+};
