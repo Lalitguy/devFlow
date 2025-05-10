@@ -63,4 +63,11 @@ export const api = {
         body: JSON.stringify({ user, provider, providerAccountId }),
       }),
   },
+  ai: {
+    getAnswer: (question: string, content: string) =>
+      fetchHandler(`${BASE_URL}/ai/answers`, {
+        method: "POST",
+        body: JSON.stringify({ question, content }),
+      }),
+  },
 };

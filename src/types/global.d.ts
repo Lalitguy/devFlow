@@ -78,4 +78,5 @@ declare global {
   };
 
   type ApiErrorResponse = NextResponse<ErrorResponse>;
+  type APIResponse<T = null> = NextResponse<SuccessResponse<T> | ErrorResponse>;
 }
