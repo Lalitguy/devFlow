@@ -5,51 +5,9 @@ import LocalSearch from "@/components/search/LocalSearch";
 import { Button } from "@/components/ui/button";
 import ROUTES from "@/constants/routes";
 import Link from "next/link";
-import { filter } from "@mdxeditor/editor";
 import { getQuestions } from "@/lib/actions/question.action";
-
-const questions: QuestionProps[] = [
-  {
-    _id: "1",
-    title: "How to create and use a custom hook in React ?",
-    tags: [{ _id: "1", name: "React" }],
-    createdAt: new Date(),
-    author: { _id: "1", name: "John Doe", image: "/icons/avatar.svg" },
-    upvotes: 10,
-    answers: 5,
-    views: 100,
-  },
-  {
-    _id: "2",
-    title: "How to use useEffect hook in React ?",
-    tags: [{ _id: "1", name: "React" }],
-    createdAt: new Date("2023-10-01"),
-    author: { _id: "1", name: "John Doe", image: "/icons/avatar.svg" },
-    upvotes: 10,
-    answers: 5,
-    views: 100,
-  },
-  {
-    _id: "3",
-    title: "How to use Javascript ?",
-    tags: [{ _id: "1", name: "javascript" }],
-    createdAt: new Date("2023-10-01"),
-    author: { _id: "1", name: "John Doe", image: "/icons/avatar.svg" },
-    upvotes: 10,
-    answers: 5,
-    views: 100,
-  },
-  {
-    _id: "4",
-    title: "What is Query ?",
-    tags: [{ _id: "1", name: "bun" }],
-    createdAt: new Date("2023-10-01"),
-    author: { _id: "1", name: "John Doe", image: "/icons/avatar.svg" },
-    upvotes: 10,
-    answers: 5,
-    views: 100,
-  },
-];
+import DataRenderer from "@/components/DataRenderer";
+import { EMPTY_QUESTION } from "@/constants/states";
 
 const Home = async ({ searchParams }: RouteParams) => {
   const { page, pageSize, query, filter } = await searchParams;
@@ -62,20 +20,6 @@ const Home = async ({ searchParams }: RouteParams) => {
   });
 
   const { questions } = data || {};
-
-  // const filteredQuestions = questions.filter((question) => {
-  //   const queryMatch = question.title
-  //     .toLowerCase()
-  //     .includes(query?.toLowerCase());
-
-  //   const filterMatch = filter ?
-  //  question.tags.some(
-  //         (tag) => tag.name.toLowerCase() === filter?.toLowerCase()
-  //       )
-  //     : true;
-
-  //   return queryMatch && filterMatch;
-  // });
 
   return (
     <>
@@ -95,23 +39,17 @@ const Home = async ({ searchParams }: RouteParams) => {
 
       <HomeFilter />
 
-      {success ? (
-        <div className="flex flex-col gap-6 mt-10 w-full">
-          {questions && questions.length ? (
-            questions?.map((e) => <QuestionCard question={e} key={e._id} />)
-          ) : (
-            <div className="flex justify-center items-center mt-10 w-full">
-              <p className="text-dark400_light700">No questions found</p>
-            </div>
-          )}
-        </div>
-      ) : (
-        <div className="flex justify-center items-center mt-10 w-full">
-          <p className="text-dark400_light700">
-            {error?.message || "Failed to fetch questions"}
-          </p>
-        </div>
-      )}
+      <DataRenderer
+        success={success}
+        error={error}
+        data={questions}
+        empty={EMPTY_QUESTION}
+        render={(questions) => (
+          <div className="flex flex-col gap-6 mt-10 w-full">
+            {questions?.map((e) => <QuestionCard question={e} key={e._id} />)}
+          </div>
+        )}
+      />
     </>
   );
 };

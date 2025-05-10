@@ -52,14 +52,16 @@ declare global {
     createdAt: Date;
   }
 
+  type ErrorType = {
+    message: string;
+    details?: Record<string, string[]>;
+  };
+
   type ActionResponse<T = null> = {
     success: boolean;
     status?: number;
     data?: T;
-    error?: {
-      message: string;
-      details?: Record<string, string[]>;
-    };
+    error?: ErrorType;
   };
 
   interface PaginatedSearchParams {
