@@ -56,7 +56,7 @@ const RootLayout = async ({
           >
             {children}
           </ThemeProvider>
-          <Toaster />
+          <Toaster position="top-center" richColors />
         </body>
       </SessionProvider>
     </html>

@@ -189,7 +189,6 @@ export async function getQuestion(
   const validationResult = await action({
     params,
     schema: GetQuestionSchema,
-    authorize: true,
   });
 
   if (validationResult instanceof Error) {
@@ -200,14 +199,14 @@ export async function getQuestion(
 
   try {
     const question = await Question.findById(questionId)
-      .populate("tags")
-      .populate({ path: "author", select: "_id name image" });
+      .populate("tags", "_id name")
+      .populate("author", "_id name image");
 
     if (!question) throw new Error("Question not found");
 
     return { success: true, data: JSON.parse(JSON.stringify(question)) };
-  } catch (err) {
-    return handleError(err) as ErrorResponse;
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
   }
 }
 

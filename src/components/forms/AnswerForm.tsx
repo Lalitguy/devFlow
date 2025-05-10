@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRef, useState } from "react";
 import { useForm } from "react-hook-form";
@@ -20,22 +20,42 @@ import { MDXEditorMethods } from "@mdxeditor/editor";
 import { RefreshCcw } from "lucide-react";
 import dynamic from "next/dynamic";
 import Image from "next/image";
+import { createAnswer } from "@/lib/actions/answer.action";
+import { toast } from "sonner";
 
 const Editor = dynamic(() => import("@/components/editor"), {
   // Make sure we turn SSR off
   ssr: false,
 });
 
-const AnswerForm = () => {
+const AnswerForm = ({ questionId }: { questionId: string }) => {
   const editorRef = useRef<MDXEditorMethods>(null);
-  const [isSubmitting, setisSubmitting] = useState(false);
+  const [isAnswering, startAnsweringTransition] = useTransition();
   const [isAISubmitting, setIsAISubmitting] = useState(false);
   const form = useForm<z.infer<typeof AnswerSchema>>({
     resolver: zodResolver(AnswerSchema),
     defaultValues: { content: "" },
   });
 
-  const handleSubmit = async () => {};
+  const handleSubmit = async (value: z.infer<typeof AnswerSchema>) => {
+    startAnsweringTransition(async () => {
+      const { success, error } = await createAnswer({
+        questionId,
+        content: value.content,
+      });
+
+      if (success) {
+        form.reset();
+        toast.success("Answer created successfully", {
+          description: "Your answer has been posted successfully",
+        });
+      } else {
+        toast.error("An error occurred while creating the answer", {
+          description: error?.message || "Please try again later",
+        });
+      }
+    });
+  };
 
   return (
     <div>
@@ -96,10 +116,10 @@ const AnswerForm = () => {
           <div className="flex justify-end">
             <Button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isAnswering}
               className="primary-gradient"
             >
-              {isSubmitting ? (
+              {isAnswering ? (
                 <>
                   <RefreshCcw className="mr-2 size-4 animate-spin" />
                   <span>Posting...</span>
