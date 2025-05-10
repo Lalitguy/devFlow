@@ -2,7 +2,7 @@ import ROUTES from "./routes";
 export type DataState = {
   title: string;
   message: string;
-  button: {
+  button?: {
     text: string;
     href: string;
   };

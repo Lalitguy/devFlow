@@ -1,3 +1,4 @@
+import AllAnswers from "@/components/answers/AllAnswers";
 import TagCard from "@/components/cards/TagCard";
 import Preview from "@/components/editor/Preview";
 import AnswerForm from "@/components/forms/AnswerForm";
@@ -27,14 +28,19 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
     question || {};
 
   const { page, pageSize, filter } = await searchParams;
-  const { success: areAnswersLoaded, data: answersData } = await getAnswers({
+  const {
+    success: areAnswersLoaded,
+    data: answersData,
+    error: answersError,
+  } = await getAnswers({
     questionId: id,
     page: Number(page) || 1,
     pageSize: Number(pageSize) || 10,
     filter,
   });
 
-  if (success) console.log("Question loaded successfully", answersData);
+  if (areAnswersLoaded)
+    console.log("Question loaded successfully", answersData);
   return (
     <>
       <div className="flex-col flex-start w-full">
@@ -88,6 +94,14 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
         ))}
       </div>
 
+      <section className="my-5">
+        <AllAnswers
+          data={answersData?.answers}
+          success={areAnswersLoaded}
+          error={answersError}
+          totalAnswers={answersData?.totalAnswers || 0}
+        />
+      </section>
       <section className="my-5">
         <AnswerForm questionId={id} />
       </section>
