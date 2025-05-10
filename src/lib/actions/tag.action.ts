@@ -3,11 +3,10 @@ import action from "../handlers/action";
 import handleError from "../handlers/error";
 import { PaginatedSearchParamsSchema } from "../validations";
 import { Tag } from "@/database";
-import { ITagDoc } from "@/database/tag.model";
 
 export const getTags = async (
   params: PaginatedSearchParams
-): Promise<ActionResponse<{ tags: ITagDoc[]; isNext: boolean }>> => {
+): Promise<ActionResponse<{ tags: Tag[]; isNext: boolean }>> => {
   const validationResult = await action({
     params,
     schema: PaginatedSearchParamsSchema,

@@ -1,16 +1,47 @@
+import TagCard from "@/components/cards/TagCard";
+import DataRenderer from "@/components/DataRenderer";
+import LocalSearch from "@/components/search/LocalSearch";
+import ROUTES from "@/constants/routes";
+import { EMPTY_TAGS } from "@/constants/states";
 import { getTags } from "@/lib/actions/tag.action";
 import React from "react";
 
-const Tags = async () => {
-  const { success, data } = await getTags({
-    page: 1,
-    pageSize: 10,
+const Tags = async ({ searchParams }: RouteParams) => {
+  const { page, pageSize, query, filter } = await searchParams;
+  const { success, data, error } = await getTags({
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+    query,
+    filter,
   });
+
   if (!success) return;
+
   const { tags } = data || {};
 
-  console.log(JSON.stringify(tags, null, 2));
-  return <div>{JSON.stringify(tags, null, 2)}</div>;
+  return (
+    <>
+      <h1 className="text-dark100_light900 text-3xl h1-bold">Tags</h1>
+
+      <section className="flex flex-col gap-4 mt-11">
+        <LocalSearch route={ROUTES.TAGS} placeholder="Search by tag name..." />
+      </section>
+
+      <DataRenderer
+        success={success}
+        error={error}
+        data={tags}
+        empty={EMPTY_TAGS}
+        render={(tags) => (
+          <div className="flex flex-wrap gap-4 mt-10 w-full">
+            {tags.map((tag) => (
+              <TagCard key={tag._id} {...tag} compact={false} />
+            ))}
+          </div>
+        )}
+      />
+    </>
+  );
 };
 
 export default Tags;
