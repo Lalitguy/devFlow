@@ -4,6 +4,7 @@ import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
 import UserAvatar from "@/components/UserAvatar";
 import ROUTES from "@/constants/routes";
+import { getAnswers } from "@/lib/actions/answer.action";
 import { getQuestion, incrementViews } from "@/lib/actions/question.action";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
@@ -11,7 +12,7 @@ import { redirect } from "next/navigation";
 import { after } from "next/server";
 import React from "react";
 
-const QuestionDetails = async ({ params }: RouteParams) => {
+const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
   const {
     success,
@@ -25,6 +26,15 @@ const QuestionDetails = async ({ params }: RouteParams) => {
   const { author, title, createdAt, answers, views, tags, content } =
     question || {};
 
+  const { page, pageSize, filter } = await searchParams;
+  const { success: areAnswersLoaded, data: answersData } = await getAnswers({
+    questionId: id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+    filter,
+  });
+
+  if (success) console.log("Question loaded successfully", answersData);
   return (
     <>
       <div className="flex-col flex-start w-full">

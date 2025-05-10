@@ -46,9 +46,6 @@ declare global {
     _id: string;
     author: Author;
     content: string;
-    upvotes: number;
-    question: string;
-    downvotes: number;
     createdAt: Date;
   }
 
