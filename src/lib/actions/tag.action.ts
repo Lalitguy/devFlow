@@ -95,7 +95,9 @@ export const getTagQuestions = async (
     const tag = await Tag.findById(tagId);
 
     if (!tag) throw new Error("Tag not found");
-    const filterQuery: FilterQuery<typeof Question> = {};
+    const filterQuery: FilterQuery<typeof Question> = {
+      tags: { $in: [tagId] },
+    };
 
     if (query) {
       filterQuery.title = { $regex: query, $options: "i" };
