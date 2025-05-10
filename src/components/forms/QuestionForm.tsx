@@ -68,7 +68,8 @@ const QuestionForm = ({ question, isEdit = false }: QuestionFormProps = {}) => {
             ? "Question updated successfully"
             : "Question created successfully",
         });
-        if (result.data) router.push(ROUTES.QUESTION(result.data._id));
+        if (result.data)
+          router.push(ROUTES.QUESTION(result.data._id as string));
       } else {
         toast.error(`Error ${result?.status}`, {
           description: result?.error?.message || "An error occurred",
