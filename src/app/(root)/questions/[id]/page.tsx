@@ -1,10 +1,10 @@
 import TagCard from "@/components/cards/TagCard";
+import Preview from "@/components/editor/Preview";
 import Metric from "@/components/Metric";
 import UserAvatar from "@/components/UserAvatar";
 import ROUTES from "@/constants/routes";
 import { formatNumber, getTimeStamp } from "@/lib/utils";
 import Link from "next/link";
-import { title } from "process";
 import React from "react";
 
 const sampleQuestion = {
@@ -91,7 +91,8 @@ Looking forward to your suggestions and examples!
 const QuestionDetails = async ({ params }: RouteParams) => {
   const { id } = await params;
 
-  const { author, title, createdAt, answers, views, tags } = sampleQuestion;
+  const { author, title, createdAt, answers, views, tags, content } =
+    sampleQuestion;
   return (
     <>
       <div className="flex-col flex-start w-full">
@@ -137,7 +138,7 @@ const QuestionDetails = async ({ params }: RouteParams) => {
           alt="Clock icon"
         />
       </div>
-      <p>Preview Content</p>
+      <Preview content={content} />
 
       <div className="flex flex-wrap gap-2 mt-8">
         {tags.map((tag) => (
