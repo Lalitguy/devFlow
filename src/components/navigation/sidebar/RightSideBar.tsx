@@ -2,12 +2,18 @@ import TagCard from "@/components/cards/TagCard";
 import DataRenderer from "@/components/DataRenderer";
 import ROUTES from "@/constants/routes";
 import { getHotQuestions } from "@/lib/actions/question.action";
+import { getTopTags } from "@/lib/actions/tag.action";
 import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 
 const RightSideBar = async () => {
   const { success, data: hotQuestions, error } = await getHotQuestions();
+  const {
+    success: tagSuccess,
+    data: popularTags,
+    error: tagError,
+  } = await getTopTags();
 
   return (
     <section className="max-xl:hidden top-0 right-0 sticky flex flex-col gap-6 shadow-light-300 dark:shadow-none p-6 pt-32 light-border border-l w-[350px] h-screen overflow-y-auto custom-scrollbar background-light900_dark200">
@@ -60,18 +66,29 @@ const RightSideBar = async () => {
 
         <div className="mt-16">
           <h3 className="text-dark200_light800 h3-bold">Popular Tags</h3>
-          <div className="flex flex-col gap-4 mt-7">
-            {/* {popularTags.map(({ _id, name, questions }) => (
-              <TagCard
-                key={_id}
-                _id={_id}
-                name={name}
-                questions={questions}
-                showCount
-                compact
-              />
-            ))} */}
-          </div>
+          <DataRenderer
+            success={tagSuccess}
+            error={tagError}
+            data={popularTags}
+            empty={{
+              title: "No tags found",
+              message: "Feel free to add some tags",
+            }}
+            render={(popularTags) => (
+              <div className="flex flex-col gap-[12px] mt-6 w-full">
+                {popularTags.map(({ _id, name, questions }) => (
+                  <TagCard
+                    key={_id}
+                    _id={_id}
+                    name={name}
+                    questions={questions}
+                    showCount
+                    compact
+                  />
+                ))}
+              </div>
+            )}
+          />
         </div>
       </div>
     </section>
