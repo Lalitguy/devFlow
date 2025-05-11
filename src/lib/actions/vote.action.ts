@@ -10,6 +10,8 @@ import {
   HasVotedSchema,
   UpdateVoteCountSchema,
 } from "../validations";
+import ROUTES from "@/constants/routes";
+import { revalidatePath } from "next/cache";
 
 async function updateVoteCount(
   params: UpdateVoteCountParams,
@@ -98,8 +100,8 @@ export const createVote = async (
         [
           {
             author: userId,
-            actionId: targetId,
-            actionType: targetType,
+            targetId,
+            targetType,
             voteType,
           },
         ],
@@ -119,6 +121,7 @@ export const createVote = async (
     await session.commitTransaction();
     session.endSession();
 
+    revalidatePath(ROUTES.QUESTION(targetId));
     return { success: true };
   } catch (error) {
     await session.abortTransaction();
@@ -147,19 +150,19 @@ export async function hasVoted(
   try {
     const vote = await Vote.findOne({
       author: userId,
-      actionId: targetId,
-      actionType: targetType,
+      targetId,
+      targetType,
     });
 
     if (!vote)
       return {
-        success: false,
+        success: true,
         data: {
           hasUpvoted: false,
           hasDownvoted: false,
         },
       };
-
+    console.log(vote);
     return {
       success: true,
       data: {

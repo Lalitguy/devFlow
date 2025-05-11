@@ -1,27 +1,36 @@
 "use client";
 
+import { createVote } from "@/lib/actions/vote.action";
 import { formatNumber } from "@/lib/utils";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import { toast } from "sonner";
 
 interface VotesProps {
   upvotes: number;
   downvotes: number;
-  hasupVoted: boolean;
-  hasdownVoted: boolean;
+  targetType: "question" | "answer";
+  targetId: string;
+  hasVotedPromise: Promise<ActionResponse<HasVotedResponse>>;
 }
+
 const Votes = ({
   upvotes,
   downvotes,
-  hasupVoted,
-  hasdownVoted,
+  targetType,
+  targetId,
+  hasVotedPromise,
 }: VotesProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const session = useSession();
+  const { success, data, error } = use(hasVotedPromise);
 
+  console.log("hasVoted", success, data, error);
+  const session = useSession();
   const userId = session?.data?.user?.id;
+
+  if (!success) return null;
+  const { hasUpvoted, hasDownvoted } = data!;
 
   const handleVote = async (voteType: "upvote" | "downvote") => {
     setIsLoading(true);
@@ -33,10 +42,24 @@ const Votes = ({
     }
 
     try {
+      const result = await createVote({
+        targetId,
+        targetType,
+        voteType,
+      });
+
+      if (!result.success) {
+        toast.error("Failed to vote", {
+          description:
+            result.error?.message ||
+            "An error occurred while trying to vote. Please try again.",
+        });
+        return;
+      }
       const successMessage =
         voteType === "upvote"
-          ? `Upvote ${hasupVoted ? "remove" : "added"} Successfully`
-          : `Downvote ${hasdownVoted ? "remove" : "added"} Successfully`;
+          ? `Upvote ${hasUpvoted ? "remove" : "added"} Successfully`
+          : `Downvote ${hasDownvoted ? "remove" : "added"} Successfully`;
 
       toast.success(successMessage, {
         description: "Your vote has been recorded",
@@ -55,7 +78,9 @@ const Votes = ({
     <div className="flex-center gap-2.5">
       <div className="flex-center gap-1.5">
         <Image
-          src={hasupVoted ? "/icons/upvoted.svg" : "/icons/upvote.svg"}
+          src={
+            success && hasUpvoted ? "/icons/upvoted.svg" : "/icons/upvote.svg"
+          }
           width={18}
           height={18}
           alt="upvote"
@@ -71,7 +96,11 @@ const Votes = ({
 
       <div className="flex-center gap-1.5">
         <Image
-          src={hasdownVoted ? "/icons/downvoted.svg" : "/icons/downvote.svg"}
+          src={
+            success && hasDownvoted
+              ? "/icons/downvoted.svg"
+              : "/icons/downvote.svg"
+          }
           width={18}
           height={18}
           alt="upvote"
