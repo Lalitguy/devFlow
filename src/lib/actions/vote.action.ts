@@ -1,0 +1,125 @@
+"use server";
+
+import { Answer, Question } from "@/database";
+import Vote from "@/database/vote.model";
+import mongoose, { ClientSession } from "mongoose";
+import action from "../handlers/action";
+import handleError from "../handlers/error";
+import { CreateVoteSchema, UpdateVoteCountSchema } from "../validations";
+
+async function updateVoteCount(
+  params: UpdateVoteCountParams,
+  session?: ClientSession
+): Promise<ActionResponse> {
+  const validationResult = await action({
+    params,
+    schema: UpdateVoteCountSchema,
+  });
+
+  if (validationResult instanceof Error) {
+    return handleError(validationResult) as ErrorResponse;
+  }
+
+  const { targetId, targetType, voteType, change } = validationResult.params!;
+
+  const Model = targetType === "question" ? Question : Answer;
+  const voteField = voteType === "upvote" ? "upvotes" : "downvotes";
+
+  try {
+    const result = await Model.findByIdAndUpdate(
+      targetId,
+      { $inc: { [voteField]: change } },
+      { new: true, session }
+    );
+
+    if (!result) throw new Error("Failed to update vote count");
+
+    return { success: true };
+  } catch (error) {
+    return handleError(error) as ErrorResponse;
+  }
+}
+
+export const createVote = async (
+  params: CreateVoteParams
+): Promise<ActionResponse> => {
+  const validatedData = await action({
+    params,
+    schema: CreateVoteSchema,
+    authorize: true,
+  });
+
+  if (validatedData instanceof Error) {
+    return handleError(validatedData) as ErrorResponse;
+  }
+
+  const { targetId, targetType, voteType } = validatedData.params!;
+  const userId = validatedData.session?.user?.id;
+
+  if (!userId) {
+    return handleError("User not authenticated") as ErrorResponse;
+  }
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const existingVote = await Vote.findOne({
+      author: userId,
+      actionId: targetId,
+      actionType: targetType,
+    }).session(session);
+
+    if (existingVote) {
+      if (existingVote.voteType === voteType) {
+        await Vote.deleteOne({ _id: existingVote._id }).session(session);
+        await updateVoteCount(
+          { targetId, targetType, voteType, change: -1 },
+          session
+        );
+      } else {
+        await Vote.findByIdAndUpdate(
+          existingVote._id,
+          { voteType },
+          { new: true, session }
+        );
+
+        await updateVoteCount(
+          { targetId, targetType, voteType, change: 1 },
+          session
+        );
+      }
+    } else {
+      await Vote.create(
+        [
+          {
+            author: userId,
+            actionId: targetId,
+            actionType: targetType,
+            voteType,
+          },
+        ],
+        { session }
+      );
+      await updateVoteCount(
+        {
+          targetId,
+          targetType,
+          voteType,
+          change: 1,
+        },
+        session
+      );
+    }
+
+    await session.commitTransaction();
+    session.endSession();
+
+    return { success: true };
+  } catch (error) {
+    await session.abortTransaction();
+    return handleError(error) as ErrorResponse;
+  } finally {
+    await session.endSession();
+  }
+};
