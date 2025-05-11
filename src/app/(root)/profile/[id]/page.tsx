@@ -1,7 +1,7 @@
 import { auth } from "@/auth";
 import ProfileLink from "@/components/user/ProfileLink";
 import UserAvatar from "@/components/UserAvatar";
-import { getUser } from "@/lib/actions/user.action";
+import { getUser, getUserQuestions } from "@/lib/actions/user.action";
 import { notFound } from "next/navigation";
 import React from "react";
 import dayjs from "dayjs";
@@ -17,8 +17,9 @@ import Pagination from "@/components/Pagination";
 import { EMPTY_QUESTION, EMPTY_ANSWERS } from "@/constants/states";
 import page from "../page";
 
-const UserProfile = async ({ params }: RouteParams) => {
+const UserProfile = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
+  const { page, pageSize } = await searchParams;
   if (!id) notFound();
 
   const loggedInUser = await auth();
@@ -37,6 +38,18 @@ const UserProfile = async ({ params }: RouteParams) => {
 
   const { _id, name, image, username, portfolio, location, createdAt, bio } =
     user;
+
+  const {
+    success: userQuestionsSuccess,
+    data: userQuestionData,
+    error: userQuestionsError,
+  } = await getUserQuestions({
+    userId: id,
+    page: Number(page) || 1,
+    pageSize: Number(pageSize) || 10,
+  });
+
+  const { questions, isNext: hasMoreQuestions } = userQuestionData || {};
   return (
     <>
       <section className="flex sm:flex-row flex-col-reverse justify-between items-start">
@@ -117,7 +130,20 @@ const UserProfile = async ({ params }: RouteParams) => {
             value="top-posts"
             className="flex flex-col gap-6 mt-5 w-full"
           >
-            Posts
+            <DataRenderer
+              success={userQuestionsSuccess}
+              error={userQuestionsError}
+              data={questions}
+              empty={EMPTY_QUESTION}
+              render={(questions) => (
+                <div className="flex flex-col gap-6 w-full">
+                  {questions.map((question) => (
+                    <QuestionCard key={question._id} question={question} />
+                  ))}
+                </div>
+              )}
+            />
+            <Pagination isNext={hasMoreQuestions} page={page} />
           </TabsContent>
 
           <TabsContent
