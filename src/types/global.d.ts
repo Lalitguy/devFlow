@@ -52,18 +52,6 @@ declare global {
     downvotes: number;
   }
 
-  type ErrorType = {
-    message: string;
-    details?: Record<string, string[]>;
-  };
-
-  type ActionResponse<T = null> = {
-    success: boolean;
-    status?: number;
-    data?: T;
-    error?: ErrorType;
-  };
-
   interface PaginatedSearchParams {
     page?: number;
     pageSize?: number;
@@ -90,6 +78,24 @@ declare global {
     author: string | Author;
     question: QuestionI;
   }
+
+  interface BadgeCounts {
+    GOLD: number;
+    SILVER: number;
+    BRONZE: number;
+  }
+
+  type ErrorType = {
+    message: string;
+    details?: Record<string, string[]>;
+  };
+
+  type ActionResponse<T = null> = {
+    success: boolean;
+    status?: number;
+    data?: T;
+    error?: ErrorType;
+  };
 
   type SuccessResponse<T = null> = ActionResponse<T> & {
     success: true;
