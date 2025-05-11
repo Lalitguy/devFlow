@@ -142,6 +142,8 @@ export const createVote = async (
     await session.commitTransaction();
     session.endSession();
 
+    //this revalidates for question too, becasue answers are declared in same route - question/[id]
+    //So as [id] is dynamic - router question/[anything] page is revalidated
     revalidatePath(ROUTES.QUESTION(targetId));
     return { success: true };
   } catch (error) {
