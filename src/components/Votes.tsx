@@ -23,9 +23,8 @@ const Votes = ({
   hasVotedPromise,
 }: VotesProps) => {
   const [isLoading, setIsLoading] = useState(false);
-  const { success, data, error } = use(hasVotedPromise);
+  const { success, data } = use(hasVotedPromise);
 
-  console.log("hasVoted", success, data, error);
   const session = useSession();
   const userId = session?.data?.user?.id;
 

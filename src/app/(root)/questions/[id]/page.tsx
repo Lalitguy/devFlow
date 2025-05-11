@@ -58,7 +58,7 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
   return (
     <>
       <div className="flex-col flex-start w-full">
-        <div className="flex flex-col-reverse justify-between w-full">
+        <div className="flex flex-row justify-between w-full">
           <div className="flex justify-start items-center gap-1">
             <UserAvatar
               id={author._id}

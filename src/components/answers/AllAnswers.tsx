@@ -28,15 +28,7 @@ const AllAnswers = ({
         data={data}
         empty={EMPTY_ANSWERS}
         render={(answers) =>
-          answers.map(({ _id, author, content, createdAt }) => (
-            <AnswerCard
-              key={_id}
-              _id={_id}
-              author={author}
-              content={content}
-              createdAt={createdAt}
-            />
-          ))
+          answers.map((answer) => <AnswerCard key={answer._id} {...answer} />)
         }
       />
     </div>
