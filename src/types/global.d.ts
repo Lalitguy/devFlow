@@ -84,6 +84,12 @@ declare global {
     createdAt: Date;
   }
 
+  interface Collection {
+    _id: string;
+    author: string | Author;
+    question: QuestionI;
+  }
+
   type SuccessResponse<T = null> = ActionResponse<T> & {
     success: true;
   };
