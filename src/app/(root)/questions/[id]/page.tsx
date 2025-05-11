@@ -4,6 +4,7 @@ import Preview from "@/components/editor/Preview";
 import AnswerForm from "@/components/forms/AnswerForm";
 import Metric from "@/components/Metric";
 import UserAvatar from "@/components/UserAvatar";
+import Votes from "@/components/Votes";
 import ROUTES from "@/constants/routes";
 import { getAnswers } from "@/lib/actions/answer.action";
 import { getQuestion, incrementViews } from "@/lib/actions/question.action";
@@ -24,8 +25,17 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
   after(async () => await incrementViews({ questionId: id }));
 
   if (!success || !question || error) return redirect("/404");
-  const { author, title, createdAt, answers, views, tags, content } =
-    question || {};
+  const {
+    author,
+    title,
+    createdAt,
+    answers,
+    views,
+    tags,
+    content,
+    upvotes,
+    downvotes,
+  } = question || {};
 
   const { page, pageSize, filter } = await searchParams;
   const {
@@ -58,7 +68,14 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
               </p>
             </Link>
           </div>
-          <div className="flex justify-end">votes</div>
+          <div className="flex justify-end">
+            <Votes
+              upvotes={upvotes}
+              downvotes={downvotes}
+              hasupVoted
+              hasdownVoted={false}
+            />
+          </div>
         </div>
 
         <h2 className="mt-3.5 w-full text-dark200_light900 h2-semibold">
