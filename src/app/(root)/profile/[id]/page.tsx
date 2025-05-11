@@ -9,6 +9,13 @@ import ROUTES from "@/constants/routes";
 import Link from "next/link";
 import { Button } from "@/components/ui/button";
 import Stats from "@/components/user/Stats";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import AnswerCard from "@/components/cards/AnswerCard";
+import QuestionCard from "@/components/cards/QuestionCard";
+import DataRenderer from "@/components/DataRenderer";
+import Pagination from "@/components/Pagination";
+import { EMPTY_QUESTION, EMPTY_ANSWERS } from "@/constants/states";
+import page from "../page";
 
 const UserProfile = async ({ params }: RouteParams) => {
   const { id } = await params;
@@ -94,6 +101,38 @@ const UserProfile = async ({ params }: RouteParams) => {
           BRONZE: 8,
         }}
       />
+
+      <section className="flex gap-10 mt-10">
+        <Tabs defaultValue="top-posts" className="flex-[2]">
+          <TabsList className="p-1 min-h-[42px] background-light800_dark400">
+            <TabsTrigger value="top-posts" className="cursor-pointer tab">
+              Top Posts
+            </TabsTrigger>
+            <TabsTrigger value="answers" className="cursor-pointer tab">
+              Answers
+            </TabsTrigger>
+          </TabsList>
+
+          <TabsContent
+            value="top-posts"
+            className="flex flex-col gap-6 mt-5 w-full"
+          >
+            Posts
+          </TabsContent>
+
+          <TabsContent
+            value="answers"
+            className="flex flex-col gap-6 mt-5 w-full"
+          >
+            Answers
+          </TabsContent>
+        </Tabs>
+        <div className="max-lg:hidden flex flex-col flex-1 w-full min-w-[250px]">
+          <h3 className="text-dark200_light900 h3-bold">Top Tags</h3>
+
+          <div className="flex flex-col gap-4 mt-7">Tags</div>
+        </div>
+      </section>
     </>
   );
 };
