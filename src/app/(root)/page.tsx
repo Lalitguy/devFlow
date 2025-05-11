@@ -8,6 +8,8 @@ import Link from "next/link";
 import { getQuestions } from "@/lib/actions/question.action";
 import DataRenderer from "@/components/DataRenderer";
 import { EMPTY_QUESTION } from "@/constants/states";
+import CommonFilter from "@/components/filter/CommonFilter";
+import { HomePageFilters } from "@/constants/filters";
 
 const Home = async ({ searchParams }: RouteParams) => {
   const { page, pageSize, query, filter } = await searchParams;
@@ -33,8 +35,13 @@ const Home = async ({ searchParams }: RouteParams) => {
         </Button>
       </section>
       {/* Todo */}
-      <section className="mt-11">
+      <section className="flex max-sm:flex-col justify-between sm:items-center gap-5 mt-11">
         <LocalSearch route="/" placeholder="Search questions..." />
+        <CommonFilter
+          filters={HomePageFilters}
+          otherClasses="min-h-[56px] w-full "
+          containerClasses="hidden max-md:flex"
+        />
       </section>
 
       <HomeFilter />
