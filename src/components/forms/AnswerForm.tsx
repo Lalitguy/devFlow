@@ -22,13 +22,26 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { createAnswer } from "@/lib/actions/answer.action";
 import { toast } from "sonner";
+import { useSession } from "next-auth/react";
+import { api } from "@/lib/api";
 
 const Editor = dynamic(() => import("@/components/editor"), {
   // Make sure we turn SSR off
   ssr: false,
 });
 
-const AnswerForm = ({ questionId }: { questionId: string }) => {
+interface AnswerFormProps {
+  questionId: string;
+  questionTitle: string;
+  questionContent: string;
+}
+
+const AnswerForm = ({
+  questionId,
+  questionTitle,
+  questionContent,
+}: AnswerFormProps) => {
+  const session = useSession();
   const editorRef = useRef<MDXEditorMethods>(null);
   const [isAnswering, startAnsweringTransition] = useTransition();
   const [isAISubmitting, setIsAISubmitting] = useState(false);
@@ -49,6 +62,8 @@ const AnswerForm = ({ questionId }: { questionId: string }) => {
         toast.success("Answer created successfully", {
           description: "Your answer has been posted successfully",
         });
+
+        if (editorRef.current) editorRef.current.setMarkdown("");
       } else {
         toast.error("An error occurred while creating the answer", {
           description: error?.message || "Please try again later",
@@ -57,6 +72,48 @@ const AnswerForm = ({ questionId }: { questionId: string }) => {
     });
   };
 
+  const generateAIAnswer = async () => {
+    if (session.status !== "authenticated") {
+      return toast.error("You need to be signed in to use this feature", {
+        description:
+          "You need to be signed in to use this feature, please sign in to use this feature",
+      });
+    }
+    setIsAISubmitting(true);
+
+    try {
+      const { success, data, error } = await api.ai.getAnswer(
+        questionTitle,
+        questionContent
+      );
+
+      if (!success || !data?.length) {
+        return toast.error("An error occurred while generating the AI answer", {
+          description:
+            error instanceof Error ? error.message : "Please try again later",
+        });
+      }
+
+      const formattedData = data.replace(/<br>/g, "").toString().trim();
+      if (editorRef.current) {
+        editorRef.current.setMarkdown(formattedData);
+        form.setValue("content", formattedData);
+        form.trigger("content");
+      }
+
+      toast.success("AI answer generated successfully", {
+        description: "Your AI answer has been generated successfully",
+      });
+    } catch (error) {
+      toast.error("An error occurred while generating the AI answer", {
+        description:
+          error instanceof Error ? error.message : "Please try again later",
+      });
+      setIsAISubmitting(false);
+    } finally {
+      setIsAISubmitting(false);
+    }
+  };
   return (
     <div>
       <div className="flex sm:flex-row flex-col justify-between sm:items-center gap-5 sm:gap-2">
@@ -67,6 +124,7 @@ const AnswerForm = ({ questionId }: { questionId: string }) => {
           type="submit"
           disabled={isAISubmitting}
           className="gap-1.5 shadow-none px-4 py-2.5 border light-border-2 rounded-md text-primary-500 dark:text-primary-500 btn"
+          onClick={generateAIAnswer}
         >
           {isAISubmitting ? (
             <>

@@ -65,9 +65,10 @@ export const api = {
   },
   ai: {
     getAnswer: (question: string, content: string) =>
-      fetchHandler(`${BASE_URL}/ai/answers`, {
+      fetchHandler<string>(`${BASE_URL}/ai/answers`, {
         method: "POST",
         body: JSON.stringify({ question, content }),
+        timeout: 15000,
       }),
   },
 };
