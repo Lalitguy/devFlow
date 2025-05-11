@@ -4,15 +4,20 @@ import { EMPTY_ANSWERS } from "@/constants/states";
 import AnswerCard from "../cards/AnswerCard";
 import CommonFilter from "../filter/CommonFilter";
 import { AnswerFilters } from "@/constants/filters";
+import Pagination from "../Pagination";
 
 interface AllAnswersProps extends ActionResponse<Answer[]> {
   totalAnswers: number;
+  page: number;
+  isNext: boolean;
 }
 const AllAnswers = ({
   data,
   success,
   error,
   totalAnswers,
+  page,
+  isNext,
 }: AllAnswersProps) => {
   return (
     <div className="mt-11">
@@ -37,6 +42,7 @@ const AllAnswers = ({
           answers.map((answer) => <AnswerCard key={answer._id} {...answer} />)
         }
       />
+      <Pagination page={page} isNext={isNext} />
     </div>
   );
 };
