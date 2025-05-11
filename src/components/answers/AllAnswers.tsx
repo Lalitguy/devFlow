@@ -2,6 +2,8 @@ import React from "react";
 import DataRenderer from "../DataRenderer";
 import { EMPTY_ANSWERS } from "@/constants/states";
 import AnswerCard from "../cards/AnswerCard";
+import CommonFilter from "../filter/CommonFilter";
+import { AnswerFilters } from "@/constants/filters";
 
 interface AllAnswersProps extends ActionResponse<Answer[]> {
   totalAnswers: number;
@@ -19,7 +21,11 @@ const AllAnswers = ({
           {totalAnswers}
           {totalAnswers === 1 ? " Answer" : " Answers"}
         </h3>
-        <span>filter</span>
+        <CommonFilter
+          filters={AnswerFilters}
+          otherClasses="sm:min-w-32 min-h-[35px]"
+          containerClasses="max-xs:w-full"
+        />
       </div>
 
       <DataRenderer

@@ -39,7 +39,6 @@ const Home = async ({ searchParams }: RouteParams) => {
         <LocalSearch route="/" placeholder="Search questions..." />
         <CommonFilter
           filters={HomePageFilters}
-          otherClasses="min-h-[56px] w-full "
           containerClasses="hidden max-md:flex"
         />
       </section>
