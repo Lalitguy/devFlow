@@ -20,10 +20,12 @@ interface StateSkeletonProps {
   };
   title: string;
   message: string;
-  button: {
-    text: string;
-    href: string;
-  };
+  button:
+    | {
+        text: string;
+        href: string;
+      }
+    | undefined;
 }
 
 const StateSkeleton = ({
