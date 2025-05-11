@@ -72,30 +72,51 @@ export const createVote = async (
   try {
     const existingVote = await Vote.findOne({
       author: userId,
-      actionId: targetId,
-      actionType: targetType,
+      targetId,
+      targetType,
     }).session(session);
 
     if (existingVote) {
       if (existingVote.voteType === voteType) {
+        // If user is voting again with the same vote type, remove the vote
         await Vote.deleteOne({ _id: existingVote._id }).session(session);
         await updateVoteCount(
-          { targetId, targetType, voteType, change: -1 },
+          {
+            targetId,
+            targetType,
+            voteType,
+            change: -1,
+          },
           session
         );
       } else {
+        // If user is changing their vote, update voteType and adjust counts
         await Vote.findByIdAndUpdate(
           existingVote._id,
           { voteType },
           { new: true, session }
         );
-
         await updateVoteCount(
-          { targetId, targetType, voteType, change: 1 },
+          {
+            targetId,
+            targetType,
+            voteType: existingVote.voteType,
+            change: -1,
+          },
+          session
+        );
+        await updateVoteCount(
+          {
+            targetId,
+            targetType,
+            voteType,
+            change: 1,
+          },
           session
         );
       }
     } else {
+      // First-time vote creation
       await Vote.create(
         [
           {
