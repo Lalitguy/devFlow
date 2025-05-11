@@ -173,7 +173,7 @@ export async function getSavedQuestions(
       });
     }
 
-    const [totalCount] = await Collection.aggregate([
+    const [totalCount = 0] = await Collection.aggregate([
       ...pipeline,
       { $count: "count" },
     ]);
