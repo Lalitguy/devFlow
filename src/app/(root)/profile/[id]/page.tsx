@@ -5,6 +5,7 @@ import {
   getUser,
   getUserAnswers,
   getUserQuestions,
+  getUserTopTags,
 } from "@/lib/actions/user.action";
 import { notFound } from "next/navigation";
 import React from "react";
@@ -18,7 +19,8 @@ import AnswerCard from "@/components/cards/AnswerCard";
 import QuestionCard from "@/components/cards/QuestionCard";
 import DataRenderer from "@/components/DataRenderer";
 import Pagination from "@/components/Pagination";
-import { EMPTY_QUESTION, EMPTY_ANSWERS } from "@/constants/states";
+import { EMPTY_QUESTION, EMPTY_ANSWERS, EMPTY_TAGS } from "@/constants/states";
+import TagCard from "@/components/cards/TagCard";
 
 const UserProfile = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
@@ -53,6 +55,11 @@ const UserProfile = async ({ params, searchParams }: RouteParams) => {
       data: userAnswersData,
       error: userAnswersError,
     },
+    {
+      success: userTopTagsSuccess,
+      data: userTopTagsData,
+      error: userTopTagsError,
+    },
   ] = await Promise.all([
     getUserQuestions({
       userId: id,
@@ -64,12 +71,16 @@ const UserProfile = async ({ params, searchParams }: RouteParams) => {
       page: Number(page) || 1,
       pageSize: Number(pageSize) || 10,
     }),
+    getUserTopTags({
+      userId: id,
+    }),
   ]);
 
   const { questions, isNext: hasMoreQuestions } = userQuestionData || {};
 
   const { answers, isNext: hasMoreAnswers } = userAnswersData || {};
 
+  const { tags } = userTopTagsData || {};
   return (
     <>
       <section className="flex sm:flex-row flex-col-reverse justify-between items-start">
@@ -194,9 +205,30 @@ const UserProfile = async ({ params, searchParams }: RouteParams) => {
           </TabsContent>
         </Tabs>
         <div className="max-lg:hidden flex flex-col flex-1 w-full min-w-[250px]">
-          <h3 className="text-dark200_light900 h3-bold">Top Tags</h3>
+          <h3 className="text-dark200_light900 h3-bold">Top Tech</h3>
 
-          <div className="flex flex-col gap-4 mt-7">Tags</div>
+          <div className="flex flex-col gap-4 mt-7">
+            <DataRenderer
+              success={userTopTagsSuccess}
+              error={userTopTagsError}
+              data={tags}
+              empty={EMPTY_TAGS}
+              render={(tags) => (
+                <div className="flex flex-col gap-4 mt-3 w-full">
+                  {tags.map((tag) => (
+                    <TagCard
+                      key={tag._id}
+                      _id={tag._id}
+                      name={tag.name}
+                      questions={tag.count}
+                      showCount
+                      compact
+                    />
+                  ))}
+                </div>
+              )}
+            />
+          </div>
         </div>
       </section>
     </>
