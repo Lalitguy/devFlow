@@ -51,7 +51,7 @@ const QuestionDetails = async ({ params, searchParams }: RouteParams) => {
   });
 
   const hasVotedPromise = hasVoted({
-    targetId: question._id,
+    targetId: id,
     targetType: "question",
   });
 

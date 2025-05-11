@@ -183,7 +183,6 @@ export async function hasVoted(
           hasDownvoted: false,
         },
       };
-    console.log(vote);
     return {
       success: true,
       data: {
