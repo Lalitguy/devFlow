@@ -64,10 +64,10 @@ export const api = {
       }),
   },
   ai: {
-    getAnswer: (question: string, content: string) =>
+    getAnswer: (question: string, content: string, userAnswer?: string) =>
       fetchHandler<string>(`${BASE_URL}/ai/answers`, {
         method: "POST",
-        body: JSON.stringify({ question, content }),
+        body: JSON.stringify({ question, content, userAnswer }),
         timeout: 15000,
       }),
   },

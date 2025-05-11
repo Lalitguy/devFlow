@@ -81,10 +81,13 @@ const AnswerForm = ({
     }
     setIsAISubmitting(true);
 
+    const userAnswer = editorRef.current?.getMarkdown();
+
     try {
       const { success, data, error } = await api.ai.getAnswer(
         questionTitle,
-        questionContent
+        questionContent,
+        userAnswer
       );
 
       if (!success || !data?.length) {
@@ -129,7 +132,7 @@ const AnswerForm = ({
           {isAISubmitting ? (
             <>
               <RefreshCcw className="mr-2 size-4 animate-spin" />
-              <span>Posting...</span>
+              <span>Generating...</span>
             </>
           ) : (
             <>
