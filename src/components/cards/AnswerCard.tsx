@@ -2,11 +2,15 @@ import React, { Suspense } from "react";
 import UserAvatar from "../UserAvatar";
 import Link from "next/link";
 import ROUTES from "@/constants/routes";
-import { getTimeStamp } from "@/lib/utils";
+import { cn, getTimeStamp } from "@/lib/utils";
 import Preview from "../editor/Preview";
 import Votes from "../Votes";
 import { hasVoted } from "@/lib/actions/vote.action";
 
+interface AnswerCardProps extends Answer {
+  containerClasses?: string;
+  showReadMore?: boolean;
+}
 const AnswerCard = ({
   _id,
   author,
@@ -14,15 +18,18 @@ const AnswerCard = ({
   createdAt,
   upvotes,
   downvotes,
-}: Answer) => {
+  question,
+  containerClasses = "",
+  showReadMore = false,
+}: AnswerCardProps) => {
   const hasVotedPromise = hasVoted({
     targetType: "answer",
     targetId: _id,
   });
 
   return (
-    <article className="py-10 light-border border-b">
-      <span id={JSON.stringify(_id)} className="hash-span" />
+    <article className={cn("py-10 light-border border-b", containerClasses)}>
+      <span id={`answer-${_id}`} className="hash-span" />
 
       <div className="flex flex-row sm:flex-row justify-between sm:items-center gap-5 sm:gap-2 mb-5">
         <div className="flex items-start sm:items-center gap-1 felx-1">
@@ -60,6 +67,15 @@ const AnswerCard = ({
         </div>
       </div>
       <Preview content={content} />
+
+      {showReadMore && (
+        <Link
+          href={`/questions/${question}#answer-${_id}`}
+          className="z-10 relative font-space-grotesk text-primary-500 body-semibold"
+        >
+          <p className="mt-1 text-right">Read more</p>
+        </Link>
+      )}
     </article>
   );
 };

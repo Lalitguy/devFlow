@@ -1,7 +1,11 @@
 import { auth } from "@/auth";
 import ProfileLink from "@/components/user/ProfileLink";
 import UserAvatar from "@/components/UserAvatar";
-import { getUser, getUserQuestions } from "@/lib/actions/user.action";
+import {
+  getUser,
+  getUserAnswers,
+  getUserQuestions,
+} from "@/lib/actions/user.action";
 import { notFound } from "next/navigation";
 import React from "react";
 import dayjs from "dayjs";
@@ -15,7 +19,6 @@ import QuestionCard from "@/components/cards/QuestionCard";
 import DataRenderer from "@/components/DataRenderer";
 import Pagination from "@/components/Pagination";
 import { EMPTY_QUESTION, EMPTY_ANSWERS } from "@/constants/states";
-import page from "../page";
 
 const UserProfile = async ({ params, searchParams }: RouteParams) => {
   const { id } = await params;
@@ -39,17 +42,34 @@ const UserProfile = async ({ params, searchParams }: RouteParams) => {
   const { _id, name, image, username, portfolio, location, createdAt, bio } =
     user;
 
-  const {
-    success: userQuestionsSuccess,
-    data: userQuestionData,
-    error: userQuestionsError,
-  } = await getUserQuestions({
-    userId: id,
-    page: Number(page) || 1,
-    pageSize: Number(pageSize) || 10,
-  });
+  const [
+    {
+      success: userQuestionsSuccess,
+      data: userQuestionData,
+      error: userQuestionsError,
+    },
+    {
+      success: userAnswersSuccess,
+      data: userAnswersData,
+      error: userAnswersError,
+    },
+  ] = await Promise.all([
+    getUserQuestions({
+      userId: id,
+      page: Number(page) || 1,
+      pageSize: Number(pageSize) || 10,
+    }),
+    getUserAnswers({
+      userId: id,
+      page: Number(page) || 1,
+      pageSize: Number(pageSize) || 10,
+    }),
+  ]);
 
   const { questions, isNext: hasMoreQuestions } = userQuestionData || {};
+
+  const { answers, isNext: hasMoreAnswers } = userAnswersData || {};
+
   return (
     <>
       <section className="flex sm:flex-row flex-col-reverse justify-between items-start">
@@ -150,7 +170,27 @@ const UserProfile = async ({ params, searchParams }: RouteParams) => {
             value="answers"
             className="flex flex-col gap-6 mt-5 w-full"
           >
-            Answers
+            <DataRenderer
+              success={userAnswersSuccess}
+              error={userAnswersError}
+              data={answers}
+              empty={EMPTY_ANSWERS}
+              render={(answers) => (
+                <div className="flex flex-col gap-10 w-full">
+                  {answers.map((answer) => (
+                    <AnswerCard
+                      key={answer._id}
+                      {...answer}
+                      content={answer.content.slice(0, 250)}
+                      containerClasses=" card-wrapper rounded-[10px] px-7 py-9 sm:px-11"
+                      showReadMore
+                    />
+                  ))}
+                </div>
+              )}
+            />
+
+            <Pagination page={page} isNext={hasMoreAnswers || false} />
           </TabsContent>
         </Tabs>
         <div className="max-lg:hidden flex flex-col flex-1 w-full min-w-[250px]">
