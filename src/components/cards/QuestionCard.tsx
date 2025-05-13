@@ -2,6 +2,7 @@ import React from "react";
 
 interface QuestionCardProps {
   question: QuestionProps;
+  showActionsBtn?: boolean;
 }
 import Link from "next/link";
 
@@ -10,12 +11,14 @@ import { getTimeStamp } from "@/lib/utils";
 
 import Metric from "../Metric";
 import TagCard from "./TagCard";
+import EditDeleteAction from "../user/EditDeleteAction";
 const QuestionCard = ({
   question: { _id, title, tags, author, createdAt, upvotes, answers, views },
+  showActionsBtn = false,
 }: QuestionCardProps) => {
   return (
     <div className="p-9 sm:px-11 rounded-[10px] card-wrapper">
-      <div className="flex sm:flex-row flex-col-reverse justify-between gap-5">
+      <div className="flex sm:flex-row flex-col-reverse justify-between items-center gap-5">
         <div className="flex-1">
           <span className="sm:hidden flex text-dark400_light700 line-clamp-1 subtle-regular">
             {getTimeStamp(createdAt)}
@@ -28,7 +31,7 @@ const QuestionCard = ({
           </Link>
         </div>
 
-        {/* {showActionBtns && <EditDeleteAction type="Question" itemId={_id} />} */}
+        {showActionsBtn && <EditDeleteAction type="Question" itemId={_id} />}
       </div>
 
       <div className="flex flex-wrap gap-2 mt-3.5 w-full">

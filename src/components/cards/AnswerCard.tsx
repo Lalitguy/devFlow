@@ -6,10 +6,12 @@ import { cn, getTimeStamp } from "@/lib/utils";
 import Preview from "../editor/Preview";
 import Votes from "../Votes";
 import { hasVoted } from "@/lib/actions/vote.action";
+import EditDeleteAction from "../user/EditDeleteAction";
 
 interface AnswerCardProps extends Answer {
   containerClasses?: string;
   showReadMore?: boolean;
+  showActionsBtn?: boolean;
 }
 const AnswerCard = ({
   _id,
@@ -21,6 +23,7 @@ const AnswerCard = ({
   question,
   containerClasses = "",
   showReadMore = false,
+  showActionsBtn = false,
 }: AnswerCardProps) => {
   const hasVotedPromise = hasVoted({
     targetType: "answer",
@@ -28,9 +31,15 @@ const AnswerCard = ({
   });
 
   return (
-    <article className={cn("py-10 light-border border-b", containerClasses)}>
+    <article
+      className={cn("py-10 light-border border-b relative", containerClasses)}
+    >
       <span id={`answer-${_id}`} className="hash-span" />
-
+      {showActionsBtn && (
+        <div className="top-2 right-2 absolute flex-center rounded-full size-9 background-light800_dark200">
+          <EditDeleteAction type="Answer" itemId={_id} />
+        </div>
+      )}
       <div className="flex flex-row sm:flex-row justify-between sm:items-center gap-5 sm:gap-2 mb-5">
         <div className="flex items-start sm:items-center gap-1 felx-1">
           <UserAvatar
