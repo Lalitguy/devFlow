@@ -2,10 +2,14 @@
 
 import Answer, { IAnswerDoc } from "@/database/answer.model";
 import action from "../handlers/action";
-import { AnswerServerSchema, GetAnswersSchema } from "../validations";
+import {
+  AnswerServerSchema,
+  DeleteAnswerSchema,
+  GetAnswersSchema,
+} from "../validations";
 import handleError from "../handlers/error";
 import mongoose from "mongoose";
-import { Question } from "@/database";
+import { Question, Vote } from "@/database";
 import { revalidatePath } from "next/cache";
 import ROUTES from "@/constants/routes";
 
@@ -124,3 +128,55 @@ export async function getAnswers(params: GetAnswersParams): Promise<
     return handleError(error) as ErrorResponse;
   }
 }
+
+export const deleteAnswer = async (
+  params: DeleteAnswerParams
+): Promise<{ success: boolean }> => {
+  const validatedResult = await action({
+    params,
+    schema: DeleteAnswerSchema,
+    authorize: true,
+  });
+
+  if (validatedResult instanceof Error) {
+    return handleError(validatedResult) as ErrorResponse;
+  }
+
+  const userId = validatedResult.session!.user!.id!;
+
+  const { answerId } = params;
+
+  const session = await mongoose.startSession();
+  session.startTransaction();
+
+  try {
+    const answer = await Answer.findById(answerId).session(session);
+    if (answer.author.toString() !== userId) {
+      throw new Error("You are not authorized to delete this answer");
+    }
+
+    await Question.findByIdAndUpdate(
+      answer.question,
+      {
+        $inc: { answers: -1 },
+      },
+      { new: true }
+    ).session(session);
+
+    await Vote.deleteMany({
+      targetType: "answer",
+      targetId: answerId,
+    });
+
+    await Answer.findByIdAndDelete(answerId).session(session);
+
+    await session.commitTransaction();
+    revalidatePath(ROUTES.PROFILE(userId));
+    return { success: true };
+  } catch (error) {
+    session.abortTransaction();
+    return handleError(error) as ErrorResponse;
+  } finally {
+    session.endSession();
+  }
+};

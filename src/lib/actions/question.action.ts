@@ -426,8 +426,6 @@ export const deleteQuestion = async (
     await Question.findByIdAndDelete(questionId, { session });
 
     await session.commitTransaction();
-    session.endSession();
-
     revalidatePath(ROUTES.PROFILE(userId));
     return { success: true };
   } catch (err) {

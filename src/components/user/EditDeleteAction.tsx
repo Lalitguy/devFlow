@@ -17,6 +17,7 @@ import { toast } from "sonner";
 import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { deleteQuestion } from "@/lib/actions/question.action";
+import { deleteAnswer } from "@/lib/actions/answer.action";
 
 type Props = {
   type: "Question" | "Answer";
@@ -30,13 +31,12 @@ const EditDeleteAction = ({ type, itemId }: Props) => {
 
   const handleDelete = async () => {
     if (type === "Question") {
-      // Navigate to edit question page
       await deleteQuestion({ questionId: itemId });
       toast.success("Success", {
         description: "Question deleted successfully",
       });
     } else if (type === "Answer") {
-      // Navigate to edit answer page
+      await deleteAnswer({ answerId: itemId });
       toast.success("Success", {
         description: "Answer deleted successfully",
       });
