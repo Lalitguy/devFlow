@@ -24,12 +24,23 @@ interface Props {
   totalQuestions: number;
   totalAnswers: number;
   badges: BadgeCounts;
+  repuatation: number;
 }
 
-const Stats = ({ totalQuestions, totalAnswers, badges }: Props) => {
+const Stats = ({
+  totalQuestions,
+  totalAnswers,
+  badges,
+  repuatation,
+}: Props) => {
   return (
     <div className="mt-10">
-      <h4 className="text-dark200_light900 h3-semibold">Stats </h4>
+      <h4 className="text-dark200_light900 h3-semibold">
+        Stats{" "}
+        <span className="primary-text-gradient small-semibold">
+          {formatNumber(repuatation)}
+        </span>
+      </h4>
 
       <div className="gap-5 grid grid-cols-1 xs:grid-cols-2 md:grid-cols-4 mt-5">
         <div className="flex flex-wrap justify-evenly items-center gap-4 shadow-light-300 dark:shadow-dark-200 p-6 border light-border rounded-md background-light900_dark300">
