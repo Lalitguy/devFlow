@@ -12,6 +12,8 @@ import {
 } from "../validations";
 import ROUTES from "@/constants/routes";
 import { revalidatePath } from "next/cache";
+import { after } from "next/server";
+import { createInteraction } from "./interaction.action";
 
 async function updateVoteCount(
   params: UpdateVoteCountParams,
@@ -139,6 +141,22 @@ export const createVote = async (
       );
     }
 
+    const Model = targetType === "question" ? Question : Answer;
+
+    const contentDoc = await Model.findById(targetId).session(session);
+
+    if (!contentDoc) throw new Error("Content not found");
+
+    const contentAuthorId = contentDoc.author.toString();
+
+    after(async () => {
+      await createInteraction({
+        action: voteType,
+        actionId: targetId,
+        authorId: contentAuthorId,
+        actionTarget: targetType,
+      });
+    });
     await session.commitTransaction();
     session.endSession();
 
