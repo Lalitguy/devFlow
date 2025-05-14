@@ -15,7 +15,7 @@ const NavBar = async () => {
       <Link href="/" className="flex items-center gap-2">
         <Image src="/images/site-logo.svg" alt="logo" width={24} height={24} />
         <p className="max-sm:hidden font-space-grotesk text-dark-100 dark:text-light-900 h2-bold">
-          Dev<span className="text-primary-100">Flow</span>
+          Dev<span className="text-primary-500">Flow</span>
         </p>
       </Link>
 
