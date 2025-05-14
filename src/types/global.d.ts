@@ -80,7 +80,7 @@ declare global {
     question: QuestionI;
   }
 
-  interface BadgeCounts {
+  interface Badges {
     GOLD: number;
     SILVER: number;
     BRONZE: number;
