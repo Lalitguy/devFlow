@@ -178,19 +178,18 @@ const assignBadges = (params: {
   };
 
   const { criteria } = params;
-  console.log(criteria);
+
   criteria.forEach((item) => {
     const { type, count } = item;
     const badgeLevels = BADGE_CRITERIA[type];
 
     Object.keys(badgeLevels).forEach((level) => {
       if (count >= badgeLevels[level as keyof typeof badgeLevels]) {
-        console.log(count, level);
         badgeCounts[level as keyof Badges] += 1;
       }
     });
   });
-  console.log("returning badges: ", badgeCounts);
+
   return badgeCounts;
 };
 

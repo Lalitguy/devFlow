@@ -33,7 +33,6 @@ const Stats = ({
   badges,
   repuatation,
 }: Props) => {
-  console.log("getting bage", badges);
   return (
     <div className="mt-10">
       <h4 className="text-dark200_light900 h3-semibold">
