@@ -23,9 +23,6 @@ export const metadata: Metadata = {
   title: "DevFlow - A Clone",
   description:
     "A community Driven Platform for asking and answering programming questions.",
-  icons: {
-    icon: "/images/site-logo.svg",
-  },
   generator: "Next.js",
   applicationName: "DevFlow",
   referrer: "origin-when-cross-origin",
@@ -44,6 +41,22 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
     date: false,
+  },
+  robots: {
+    index: true,
+    follow: true,
+    nocache: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      noimageindex: true,
+      "max-video-preview": -1,
+      "max-image-preview": "large",
+      "max-snippet": -1,
+    },
+  },
+  icons: {
+    icon: "/images/site-logo.svg",
   },
 };
 
