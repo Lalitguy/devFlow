@@ -10,6 +10,8 @@ import {
   PaginatedSearchParamsSchema,
 } from "../validations";
 import mongoose, { PipelineStage } from "mongoose";
+import { after } from "next/server";
+import { createInteraction } from "./interaction.action";
 
 export async function toggleSaveQuestion(
   params: CollectionBaseParams
@@ -48,6 +50,15 @@ export async function toggleSaveQuestion(
         },
       };
     }
+
+    after(async () => {
+      await createInteraction({
+        action: "bookmark",
+        actionId: question._id.toString(),
+        actionTarget: "question",
+        authorId: userId as string,
+      });
+    });
 
     await Collection.create({
       question: questionId,
