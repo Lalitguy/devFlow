@@ -26,6 +26,25 @@ export const metadata: Metadata = {
   icons: {
     icon: "/images/site-logo.svg",
   },
+  generator: "Next.js",
+  applicationName: "DevFlow",
+  referrer: "origin-when-cross-origin",
+  keywords: [
+    "webb development",
+    "programming",
+    "questions",
+    "answers",
+    "community",
+  ],
+  authors: [{ name: "Lalitguy" }, { name: "Strawhats" }],
+  creator: "Lalitguy",
+  publisher: "Dev Flow",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+    date: false,
+  },
 };
 
 const RootLayout = async ({
