@@ -259,14 +259,14 @@ export async function getQuestions(params: PaginatedSearchParams): Promise<
         return { success: true, data: { questions: [], isNext: false } };
       }
 
-      // const recommended = await getRecommendedQuestions({
-      //   userId,
-      //   query,
-      //   skip,
-      //   limit,
-      // });
+      const recommended = await getRecommendedQuestions({
+        userId,
+        query,
+        skip,
+        limit,
+      });
 
-      // return { success: true, data: recommended };
+      return { success: true, data: recommended };
     }
 
     // Search
@@ -298,7 +298,7 @@ export async function getQuestions(params: PaginatedSearchParams): Promise<
 
     const questions = await Question.find(filterQuery)
       .populate("tags", "name")
-      // .populate("author", "name image")
+      .populate("author", "name image")
       .lean()
       .sort(sortCriteria)
       .skip(skip)

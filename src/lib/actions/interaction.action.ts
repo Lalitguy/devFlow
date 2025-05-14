@@ -23,7 +23,12 @@ export const createInteraction = async (
   const session = await mongoose.startSession();
   session.startTransaction();
 
-  const { action: actionType, actionId, actionTarget, authorId } = params;
+  const {
+    action: actionType,
+    actionId,
+    actionTarget,
+    authorId, // person who owns the content (question/answer)
+  } = validatedResult.params!;
 
   try {
     const [interaction] = await Interaction.create(
@@ -32,8 +37,7 @@ export const createInteraction = async (
           user: userId,
           action: actionType,
           actionId,
-          actionTarget,
-          author: authorId,
+          actionType: actionTarget,
         },
       ],
       { session }

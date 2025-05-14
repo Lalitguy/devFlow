@@ -7,26 +7,10 @@ import { cn } from "@/lib/utils";
 import { formUrlQuery, removeUrlQuery } from "@/lib/url";
 
 const filters = [
-  {
-    name: "React",
-    value: "react",
-  },
-  {
-    name: "JavaScript",
-    value: "javascript",
-  },
-  {
-    name: "Hooks",
-    value: "hook",
-  },
-  {
-    name: "CSS",
-    value: "css",
-  },
-  {
-    name: "HTML",
-    value: "html",
-  },
+  { name: "Newest", value: "newest" },
+  { name: "Popular", value: "popular" },
+  { name: "Unanswered", value: "unanswered" },
+  { name: "Recommeded", value: "recommended" },
 ];
 
 const HomeFilter = () => {
