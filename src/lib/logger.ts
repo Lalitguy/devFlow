@@ -1,4 +1,5 @@
 import pino from "pino";
+import "pino-pretty";
 
 const isEdge = process.env.NEXT_ENV === "edge";
 const isProduction = process.env.NEXT_ENV === "production";
