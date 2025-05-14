@@ -5,6 +5,7 @@ import {
   getUser,
   getUserAnswers,
   getUserQuestions,
+  getUserStats,
   getUserTopTags,
 } from "@/lib/actions/user.action";
 import { notFound } from "next/navigation";
@@ -39,10 +40,14 @@ const UserProfile = async ({ params, searchParams }: RouteParams) => {
     );
   }
 
-  const { user, totalAnswers, totalQuestions } = data! || {};
+  const { user } = data! || {};
 
   const { _id, name, image, username, portfolio, location, createdAt, bio } =
     user;
+
+  const { data: userStats } = await getUserStats({ userId: id });
+
+  const { totalAnswers, totalQuestions, badges } = userStats || {};
 
   const [
     {
@@ -137,13 +142,15 @@ const UserProfile = async ({ params, searchParams }: RouteParams) => {
       </section>
 
       <Stats
-        totalQuestions={totalQuestions}
-        totalAnswers={totalAnswers}
-        badges={{
-          GOLD: 0,
-          SILVER: 2,
-          BRONZE: 8,
-        }}
+        totalQuestions={totalQuestions || 0}
+        totalAnswers={totalAnswers || 0}
+        badges={
+          badges || {
+            GOLD: 0,
+            SILVER: 0,
+            BRONZE: 0,
+          }
+        }
         repuatation={user?.reputation || 0}
       />
 

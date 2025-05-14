@@ -23,7 +23,7 @@ const StatsCard = ({ imgUrl, value, title }: StatsCardProps) => {
 interface Props {
   totalQuestions: number;
   totalAnswers: number;
-  badges: BadgeCounts;
+  badges: Badges;
   repuatation: number;
 }
 
@@ -33,6 +33,7 @@ const Stats = ({
   badges,
   repuatation,
 }: Props) => {
+  console.log("getting bage", badges);
   return (
     <div className="mt-10">
       <h4 className="text-dark200_light900 h3-semibold">
