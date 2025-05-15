@@ -117,7 +117,6 @@ const UserProfile = async ({ params, searchParams }: RouteParams) => {
 
               <ProfileLink
                 imgUrl={"/icons/calendar.svg"}
-                href={portfolio}
                 title={dayjs(createdAt).format("MMMM YYYY")}
               />
             </div>
