@@ -51,7 +51,7 @@ const SocialAuthForm = () => {
           height={20}
           className="mr-2.5 object-contain"
         />
-        <span>Log in with Github</span>
+        <span>Log in with Google</span>
       </Button>
     </div>
   );
