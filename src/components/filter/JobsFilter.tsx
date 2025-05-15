@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Image from "next/image";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 
@@ -12,8 +12,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { formUrlQuery } from "@/lib/url";
-
+import { formUrlQuery, removeUrlQuery } from "@/lib/url";
+import { XIcon } from "lucide-react";
 import LocalSearch from "../search/LocalSearch";
 
 interface JobsFilterProps {
@@ -24,12 +24,25 @@ const JobsFilter = ({ countriesList }: JobsFilterProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  const [value, setValue] = useState<string | undefined>(undefined);
 
   const handleUpdateParams = (value: string) => {
+    setValue(value);
     const newUrl = formUrlQuery({
       params: searchParams.toString(),
       key: "location",
       value,
+    });
+
+    router.push(newUrl, { scroll: false });
+  };
+
+  const resetFilters = () => {
+    setValue(undefined);
+
+    const newUrl = removeUrlQuery({
+      params: searchParams.toString(),
+      keysToRemove: ["location", "query"],
     });
 
     router.push(newUrl, { scroll: false });
@@ -45,7 +58,10 @@ const JobsFilter = ({ countriesList }: JobsFilterProps) => {
         otherClasses="flex-1 max-sm:w-full"
       />
 
-      <Select onValueChange={(value) => handleUpdateParams(value)}>
+      <Select
+        onValueChange={(value) => handleUpdateParams(value)}
+        value={value}
+      >
         <SelectTrigger className="!flex flex-row items-center gap-3 p-4 border light-border sm:max-w-[250px] min-h-[56px] text-dark500_light700 line-clamp-1 body-regular background-light800_dark300 no-focus">
           <Image
             src="/icons/carbon-location.svg"
@@ -76,6 +92,10 @@ const JobsFilter = ({ countriesList }: JobsFilterProps) => {
           </SelectGroup>
         </SelectContent>
       </Select>
+
+      {[...searchParams.entries()].length > 0 && (
+        <XIcon className="mr-2 size-6 cursor-pointer" onClick={resetFilters} />
+      )}
     </div>
   );
 };

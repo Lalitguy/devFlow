@@ -21,8 +21,6 @@ const Page = async ({ searchParams }: RouteParams) => {
   const countries = await fetchCountries();
   const parsedPage = parseInt(page ?? 1);
 
-  console.log(jobs);
-
   return (
     <>
       <h1 className="text-dark100_light900 h1-bold">Jobs</h1>
