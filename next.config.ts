@@ -14,6 +14,11 @@ const nextConfig: NextConfig = {
         hostname: "lh3.googleusercontent.com",
         port: "",
       },
+      {
+        protocol: "https",
+        hostname: "*", //for the jobs api fetching images form different sources
+        port: "",
+      },
     ],
   },
   /* config options here */

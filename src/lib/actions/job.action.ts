@@ -1,3 +1,5 @@
+import handleError from "../handlers/error";
+
 export const fetchLocation = async () => {
   const response = await fetch("http://ip-api.com/json/?fields=country");
   const location = await response.json();
@@ -10,7 +12,7 @@ export const fetchCountries = async () => {
     const result = await response.json();
     return result;
   } catch (error) {
-    console.log(error);
+    handleError(error);
   }
 };
 
