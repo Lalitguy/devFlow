@@ -62,6 +62,8 @@ const JobCard = ({ job }: { job: Job }) => {
           <Link
             href={employer_website ?? "/jobs"}
             className="relative rounded-xl size-16 background-light800_dark400"
+            target="_blank"
+            rel="noopener noreferrer"
           >
             <Image
               src={employer_logo}
