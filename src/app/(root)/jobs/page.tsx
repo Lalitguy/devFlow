@@ -25,7 +25,7 @@ const Page = async ({ searchParams }: RouteParams) => {
     <>
       <h1 className="text-dark100_light900 h1-bold">Jobs</h1>
 
-      <div className="flex">
+      <div className="relative flex">
         <JobsFilter countriesList={countries} />
       </div>
 
