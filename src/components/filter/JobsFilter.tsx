@@ -24,10 +24,12 @@ const JobsFilter = ({ countriesList }: JobsFilterProps) => {
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
-  const [value, setValue] = useState<string | undefined>(undefined);
+  const [value, setValue] = useState<string | undefined>("");
+  const [key, setKey] = useState<number>(0);
 
   const handleUpdateParams = (value: string) => {
     setValue(value);
+    setKey((prev) => prev + 1);
     const newUrl = formUrlQuery({
       params: searchParams.toString(),
       key: "location",
@@ -38,11 +40,12 @@ const JobsFilter = ({ countriesList }: JobsFilterProps) => {
   };
 
   const resetFilters = () => {
-    setValue(undefined);
+    setValue("");
+    setKey((prev) => prev + 1);
 
     const newUrl = removeUrlQuery({
       params: searchParams.toString(),
-      keysToRemove: ["location", "query"],
+      keysToRemove: ["location"],
     });
 
     router.push(newUrl, { scroll: false });
@@ -59,8 +62,9 @@ const JobsFilter = ({ countriesList }: JobsFilterProps) => {
       />
 
       <Select
+        key={key}
         onValueChange={(value) => handleUpdateParams(value)}
-        value={value}
+        value={value || undefined}
       >
         <SelectTrigger className="!flex flex-row items-center gap-3 p-4 border light-border sm:max-w-[250px] min-h-[56px] text-dark500_light700 line-clamp-1 body-regular background-light800_dark300 no-focus">
           <Image
@@ -93,7 +97,7 @@ const JobsFilter = ({ countriesList }: JobsFilterProps) => {
         </SelectContent>
       </Select>
 
-      {[...searchParams.entries()].length > 0 && (
+      {searchParams.get("location") && (
         <XIcon className="mr-2 size-6 cursor-pointer" onClick={resetFilters} />
       )}
     </div>

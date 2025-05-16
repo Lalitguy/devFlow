@@ -1,3 +1,5 @@
+"use server";
+
 import handleError from "../handlers/error";
 
 export const fetchLocation = async () => {
