@@ -106,6 +106,12 @@ declare global {
     };
   }
 
+  interface GlobalSearchedItem {
+    id: string;
+    type: "question" | "answer" | "user" | "tag";
+    title: string;
+  }
+
   type ErrorType = {
     message: string;
     details?: Record<string, string[]>;

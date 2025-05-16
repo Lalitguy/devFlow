@@ -5,6 +5,7 @@ import Theme from "./Theme";
 import MobileNavigation from "./MobileNavigation";
 import UserAvatar from "@/components/UserAvatar";
 import { auth } from "@/auth";
+import GlobalSearch from "@/components/search/GlobalSerach";
 
 const NavBar = async () => {
   const session = await auth();
@@ -19,7 +20,7 @@ const NavBar = async () => {
         </p>
       </Link>
 
-      <p>Global Search</p>
+      <GlobalSearch />
       <div className="flex gap-4">
         <Theme />
         {user?.id && user?.name && (
