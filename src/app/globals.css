@@ -339,6 +339,10 @@
   @apply bg-light-800! data-[state=active]:bg-primary-100! dark:data-[state=active]:bg-dark-300! dark:bg-dark-400! min-h-full! text-light-500! data-[state=active]:text-primary-500!;
 }
 
+@utility home_transparent_btn {
+  @apply bg-[rgba(0,0,0,0.05)] hover:bg-[rgba(0,0,0,0.1)] dark:bg-[rgba(255,255,255,0.05)] dark:hover:bg-[rgba(255,255,255,0.1)];
+}
+
 @layer base {
   :root {
     --radius: 0.5rem;
