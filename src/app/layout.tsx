@@ -6,6 +6,7 @@ import ThemeProvider from "@/context/ThemeProvider";
 import { Toaster } from "sonner";
 import { auth } from "@/auth";
 import { SessionProvider } from "next-auth/react";
+import NextTopLoader from "nextjs-toploader";
 
 const inter = localFont({
   src: "../fonts/InterVF.ttf",
@@ -80,6 +81,7 @@ const RootLayout = async ({
         <body
           className={`${inter.className} ${SpaceGrotesk.variable} antialiased`}
         >
+          <NextTopLoader color="#ff7000" showSpinner={false} />
           <ThemeProvider
             attribute="class"
             defaultTheme="system"
